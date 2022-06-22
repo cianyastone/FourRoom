@@ -168,6 +168,21 @@ void CQuad::Update(float dt, const LightSource &lights)
 }
 
 
+
+void CQuad::Update(float dt, const LightSource& Lights, const LightSource& Lights2)	//ㄢ方
+{
+	// Lighting With GPU
+	if (m_bViewUpdated || m_bTRSUpdated) {
+		m_mxMVFinal = m_mxView * m_mxTRS;
+		m_bViewUpdated = m_bTRSUpdated = false;
+	}
+	//砞﹚方 & 穝方计秖
+	m_Light1 = Lights;	m_Light2 = Lights2;
+	UpdateMultiLight(2);
+}
+
+
+
 void CQuad::Update(float dt)
 {
 	if (m_bViewUpdated || m_bTRSUpdated) { // Model View 闽痻皚ず甧Τ笆

@@ -146,17 +146,23 @@ void CShape::SetShader(GLuint uiShaderHandle)
     m_uiColor = glGetUniformLocation( m_uiProgram, "vObjectColor" );
 	glUniform4fv(m_uiColor, 1, m_fColor ); 
 
-	m_uiLightInView = glGetUniformLocation( m_uiProgram, "LightInView" );
-	glUniform4fv(m_uiLightInView, 1, m_vLightInView); 
+	m_uiLightInView = glGetUniformLocation(m_uiProgram, "LightInView");			//²Ä¤@­Ó¥ú·½
+	glUniform4fv(m_uiLightInView, 1, m_vLightInView);
+	m_uiAmbient = glGetUniformLocation(m_uiProgram, "AmbientProduct");
+	glUniform4fv(m_uiAmbient, 1, m_AmbientProduct);
+	m_uiDiffuse = glGetUniformLocation(m_uiProgram, "DiffuseProduct");
+	glUniform4fv(m_uiDiffuse, 1, m_DiffuseProduct);
+	m_uiSpecular = glGetUniformLocation(m_uiProgram, "SpecularProduct");
+	glUniform4fv(m_uiSpecular, 1, m_SpecularProduct);
 
-	m_uiAmbient = glGetUniformLocation( m_uiProgram, "AmbientProduct" );
-	glUniform4fv(m_uiAmbient, 1, m_AmbientProduct); 
-
-	m_uiDiffuse = glGetUniformLocation( m_uiProgram, "DiffuseProduct" );
-	glUniform4fv(m_uiDiffuse, 1, m_DiffuseProduct); 
-
-	m_uiSpecular = glGetUniformLocation( m_uiProgram, "SpecularProduct" );
-	glUniform4fv(m_uiSpecular, 1, m_SpecularProduct); 
+	m_uiLightInView2 = glGetUniformLocation(m_uiProgram, "LightInView2");		//²Ä¤G­Ó¥ú·½
+	glUniform4fv(m_uiLightInView2, 1, m_vLightInView2);
+	m_uiAmbient2 = glGetUniformLocation(m_uiProgram, "AmbientProduct2");
+	glUniform4fv(m_uiAmbient2, 1, m_AmbientProduct2);
+	m_uiDiffuse2 = glGetUniformLocation(m_uiProgram, "DiffuseProduct2");
+	glUniform4fv(m_uiDiffuse2, 1, m_DiffuseProduct2);
+	m_uiSpecular2 = glGetUniformLocation(m_uiProgram, "SpecularProduct2");
+	glUniform4fv(m_uiSpecular2, 1, m_SpecularProduct2);
 
 	m_uiShininess = glGetUniformLocation( m_uiProgram, "fShininess" );
 	glUniform1f(m_uiShininess, m_Material.shininess); 
@@ -400,3 +406,32 @@ void CShape::SetTiling(float uTiling, float vTiling)  // ¹ï U¶b »P V¶b ¶i¦æ«÷¶Kª
 	glBufferSubData( GL_ARRAY_BUFFER, (sizeof(vec4)+sizeof(vec3)+sizeof(vec4))*m_iNumVtx, sizeof(vec2)*m_iNumVtx, m_pTex1 ); // vertcies' Color
 }
 //-----------------------------------------------------------------------------------------------------------------------------
+
+void CShape::UpdateMultiLight(const int LightNum)
+{
+	// Lighting With GPU
+	if (LightNum > 0 && LightNum <= 4) {	//²Ä¤@­Ó¥ú·½¡A§ó·s m_Light1
+
+		m_vLightInView = m_mxView * m_Light1.position;		// ±N Light Âà´«¨ìÃèÀY®y¼Ð
+															// ºâ¥X AmbientProduct DiffuseProduct »P SpecularProduct ªº¤º®e
+		m_AmbientProduct = m_Material.ka * m_Material.ambient * m_Light1.ambient;
+		m_AmbientProduct.w = m_Material.ambient.w;
+		m_DiffuseProduct = m_Material.kd * m_Material.diffuse * m_Light1.diffuse;
+		m_DiffuseProduct.w = m_Material.diffuse.w;
+		// «O¯d­ì©lªº alpha ­È¡A¤£¨ü¥ú·½»P¨ä¥L°Ñ¼Æªº¤zÂZ
+		m_SpecularProduct = m_Material.ks * m_Material.specular * m_Light1.specular;
+		m_SpecularProduct.w = m_Material.specular.w;
+	}
+	if (LightNum > 1 && LightNum <= 4) {	//²Ä¤G­Ó¥ú·½¡A§ó·s m_Light2
+
+		m_vLightInView2 = m_mxView * m_Light2.position;		// ±N Light Âà´«¨ìÃèÀY®y¼Ð
+															// ºâ¥X AmbientProduct DiffuseProduct »P SpecularProduct ªº¤º®e
+		m_AmbientProduct2 = m_Material.ka * m_Material.ambient * m_Light2.ambient;
+		m_AmbientProduct2.w = m_Material.ambient.w;
+		m_DiffuseProduct2 = m_Material.kd * m_Material.diffuse * m_Light2.diffuse;
+		m_DiffuseProduct2.w = m_Material.diffuse.w;
+		// «O¯d­ì©lªº alpha ­È¡A¤£¨ü¥ú·½»P¨ä¥L°Ñ¼Æªº¤zÂZ
+		m_SpecularProduct2 = m_Material.ks * m_Material.specular * m_Light2.specular;
+		m_SpecularProduct2.w = m_Material.specular.w;
+	}
+}

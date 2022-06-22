@@ -17,6 +17,7 @@ public:
 	CQuad();
 
 	void Update(float dt, const LightSource &lights);
+	void Update(float dt, const LightSource& Lights, const LightSource& Lights2);	//兩個光源
 	void Update(float dt); // 不計算光源的照明
 
 	GLuint GetShaderHandle() { return m_uiProgram;} 

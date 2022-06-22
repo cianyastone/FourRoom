@@ -67,7 +67,7 @@ LightSource g_Light1 = {
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // diffuse
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-	point4(5.0f, 4.0f, 0.0f, 1.0f),   // position
+	point4(0.0f, 4.0f, 10.0f, 1.0f),   // position
 	point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
 	vec3(0.0f, 0.0f, 0.0f),			  // spotTarget
 	vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
@@ -83,7 +83,7 @@ LightSource g_Light2 = {
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // diffuse
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-	point4(25.0f, 20.0f, 0.0f, 1.0f),   // position
+	point4(20.0f, 20.0f, 10.0f, 1.0f),   // position
 	point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
 	vec3(0.0f, 0.0f, 0.0f),			  // spotTarget
 	vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
@@ -99,7 +99,7 @@ LightSource g_Light3 = {
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // diffuse
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-	point4(50.0f, 5.0f, 0.0f, 1.0f),   // position
+	point4(20.0f, 5.0f, -10.0f, 1.0f),   // position
 	point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
 	vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
 	2.0f,	// spotExponent(parameter e); cos^(e)(phi) 
@@ -113,7 +113,7 @@ LightSource g_Light4 = {
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // diffuse
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-	point4(75.0f, 5.0f, 0.0f, 1.0f),   // position
+	point4(0.0f, 5.0f, -10.0f, 1.0f),   // position
 	point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
 	vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
 	2.0f,	// spotExponent(parameter e); cos^(e)(phi) 
@@ -123,35 +123,7 @@ LightSource g_Light4 = {
 	0,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
 	0		// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
 };
-LightSource g_Light5 = {
-	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
-	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // diffuse
-	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-	point4(100.0f, 5.0f, 0.0f, 1.0f),   // position
-	point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
-	vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
-	2.0f,	// spotExponent(parameter e); cos^(e)(phi) 
-	45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
-	0.707f,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
-	1,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
-	0,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
-	0		// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
-};
-LightSource g_Light6 = {
-	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
-	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // diffuse
-	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-	point4(125.0f, 5.0f, 0.0f, 1.0f),   // position
-	point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
-	vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
-	2.0f,	// spotExponent(parameter e); cos^(e)(phi) 
-	45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
-	0.707f,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
-	1,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
-	0,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
-	0		// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
-};
-CWireSphere* g_pLight[6];
+CWireSphere* g_pLight[4];
 //----------------------------------------------------------------------------
 
 // Texture 
@@ -184,7 +156,7 @@ void init(void)
 	g_uiFTexID[4] = texturepool->AddTexture("texture/Masonry.Brick.normal.png");
 	//
 	g_uiFTexID[5] = texturepool->AddTexture("texture/cheese.png");
-	g_uiFTexID[6] = texturepool->AddTexture("texture/raptor.png");
+	g_uiFTexID[6] = texturepool->AddTexture("texture/Masonry.Brick.png");
 #ifdef MULTITEXTURE
 	g_uiFTexID[2] = texturepool->AddTexture("texture/lightMap1.png");
 #endif
@@ -341,7 +313,7 @@ void init(void)
 	g_pCube->SetTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
 	g_pCube->SetShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
 	g_pCube->SetShader();
-	vT.x = 10.0f; vT.y = 1.0f; vT.z = 10.0f;
+	vT.x = 0.0f; vT.y = 1.0f; vT.z = 10.0f;
 	mxT = Translate(vT);
 	mxT._m[0][0] = 5.0f; mxT._m[1][1] = 5.0f; mxT._m[2][2] = 5.0f;
 	g_pCube->SetTRSMatrix(mxT);
@@ -357,7 +329,7 @@ void init(void)
 	g_pSphere->SetViewPosition(eye);
 	g_pSphere->SetShaderName("vsCubeMapping.glsl", "fsCubeMapping.glsl");//使用CUBE MAPPING
 	g_pSphere->SetShader();
-	vT.x = 25.0f; vT.y = 2.0f; vT.z = 0.0f;
+	vT.x = 20.0f; vT.y = 2.0f; vT.z = 10.0f;
 	mxT = Translate(vT);
 	mxT._m[0][0] = 2.0f; mxT._m[1][1] = 2.0f; mxT._m[2][2] = 2.0f;
 	g_pSphere->SetTRSMatrix(mxT * RotateX(90.0f));
@@ -635,32 +607,26 @@ void onFrameMove(float delta)
 
 	// 如果需要重新計算時，在這邊計算每一個物件的顏色
 	g_pFloor[0]->Update(delta, g_Light1);
-	g_pHorizontalWall[0]->Update(delta, g_Light1);
-	g_pVerticalWall[0]->Update(delta, g_Light1);
-	g_pFrontWall[0]->Update(delta, g_Light1);
+	g_pHorizontalWall[0]->Update(delta, g_Light4);
+	g_pVerticalWall[0]->Update(delta, g_Light4);
 	g_pFloor[1]->Update(delta, g_Light2);
-	g_pHorizontalWall[1]->Update(delta, g_Light2);
-	g_pVerticalWall[1]->Update(delta, g_Light2);
-	g_pFrontWall[1]->Update(delta, g_Light1);
-	g_pFloor[2]->Update(delta, g_Light3);
-	g_pHorizontalWall[2]->Update(delta, g_Light3);
-	g_pVerticalWall[2]->Update(delta, g_Light3);
-	g_pFrontWall[2]->Update(delta, g_Light2);
-	g_pFloor[3]->Update(delta, g_Light4);
-	g_pHorizontalWall[3]->Update(delta, g_Light4);
-	g_pVerticalWall[3]->Update(delta, g_Light4);
-	g_pFrontWall[3]->Update(delta, g_Light3);
-	g_pHorizontalWall[4]->Update(delta, g_Light5);
-	g_pVerticalWall[4]->Update(delta, g_Light5);
-	g_pHorizontalWall[5]->Update(delta, g_Light6);
-	g_pVerticalWall[5]->Update(delta, g_Light6);
+	g_pHorizontalWall[1]->Update(delta, g_Light1);
+	g_pVerticalWall[1]->Update(delta, g_Light3);
+	g_pFloor[2]->Update(delta, g_Light4);
+	g_pHorizontalWall[2]->Update(delta, g_Light2, g_Light3);
+	g_pVerticalWall[2]->Update(delta, g_Light1, g_Light4);
+	g_pFloor[3]->Update(delta, g_Light3);
+	g_pHorizontalWall[3]->Update(delta, g_Light1, g_Light2);
+	g_pVerticalWall[3]->Update(delta, g_Light2, g_Light3);
+	g_pHorizontalWall[4]->Update(delta, g_Light3);
+	g_pVerticalWall[4]->Update(delta, g_Light1);
+	g_pHorizontalWall[5]->Update(delta, g_Light2);
+	g_pVerticalWall[5]->Update(delta, g_Light2);
 
 	g_pCube->Update(delta, g_Light1);
 	g_pSphere->Update(delta, g_Light2);
 	g_pObj1->Update(delta, g_Light3);
 	g_pObj2->Update(delta, g_Light3);
-	g_pAimal[0]->Update(delta, g_Light6);
-	g_pAimal[1]->Update(delta, g_Light5);
 	g_pAimal[2]->Update(delta, g_Light4);
 	for (int i = 0; i < 6; i++) {
 		g_pLight[i]->Update(delta);

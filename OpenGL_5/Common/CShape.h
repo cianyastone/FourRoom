@@ -66,11 +66,11 @@ protected:
 	GLuint  m_uiProgram;
 	GLuint  m_uiBuffer;
 
-	point4  m_vLightInView;	 // 光源在世界座標的位置
-	GLuint  m_uiLightInView;	 // 光源在 shader 的位置
-	GLuint  m_uiAmbient;		 // light's ambient  與 Object's ambient  與 ka 的乘積
-	GLuint  m_uiDiffuse;		 // light's diffuse  與 Object's diffuse  與 kd 的乘積
-	GLuint  m_uiSpecular;	 // light's specular 與 Object's specular 與 ks 的乘積
+	point4  m_vLightInView, m_vLightInView2;	 // 光源在世界座標的位置
+	GLuint  m_uiLightInView, m_uiLightInView2;	 // 光源在 shader 的位置
+	GLuint  m_uiAmbient, m_uiAmbient2;		 // light's ambient  與 Object's ambient  與 ka 的乘積
+	GLuint  m_uiDiffuse, m_uiDiffuse2;		 // light's diffuse  與 Object's diffuse  與 kd 的乘積
+	GLuint  m_uiSpecular, m_uiSpecular2;	 // light's specular 與 Object's specular 與 ks 的乘積
 	GLuint  m_uiShininess;
 	GLuint  m_uiLighting;	// 光源的個數
 	GLuint  m_uiTexLayer;	// 貼圖的層次，預設就是一層 diffuse
@@ -84,11 +84,11 @@ protected:
 	GLuint  m_uiCubeMapTexName;  // 傳入 pixel shader 中的 Cube map 的貼圖編號， 
 #endif
 
-	LightSource m_Light1;
+	LightSource m_Light1, m_Light2;
 
-	color4 m_AmbientProduct;
-	color4 m_DiffuseProduct;
-	color4 m_SpecularProduct;
+	color4 m_AmbientProduct, m_AmbientProduct2;
+	color4 m_DiffuseProduct, m_DiffuseProduct2;
+	color4 m_SpecularProduct, m_SpecularProduct2;
 	int    m_iLighting;		// 設定是否要打燈
 	int    m_iTexLayer;		// 設定貼圖的層次，0 表示沒有貼圖
 
@@ -108,6 +108,7 @@ protected:
 	void	CreateBufferObject();
 	void	DrawingSetShader();
 	void	DrawingWithoutSetShader();
+	void    UpdateMultiLight(const int LightNum);
 
 public:
 	CShape();
