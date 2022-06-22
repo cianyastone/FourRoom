@@ -23,6 +23,8 @@
 #define VP_HALFWIDTH  20.0f
 #define VP_HALFHEIGHT 20.0f
 #define GRID_SIZE 20 // must be an even number
+#define WALKING_SPACE (20.0f-3.0f)//行走範圍
+#define WALKING_SPACEX (30.0f-3.0f)//行走範圍
 
 
 // For Model View and Projection Matrix
@@ -170,7 +172,7 @@ void init(void)
 	// 產生所需之 Model View 與 Projection Matrix
 	// 產生所需之 Model View 與 Projection Matrix
 	at = point4(sin(g_fTheta) * sin(g_fPhi), cos(g_fTheta), sin(g_fTheta) * cos(g_fPhi), 1.0f);
-	eye = point4(0.0f, 5.0f, 0.0f, 1.0f);
+	eye = point4( 0.0f, 5.0f, 10.0f, 1.0f);
 	auto camera = CCamera::create();
 	camera->updateViewLookAt(eye, at);
 	camera->updatePerspective(60.0, (GLfloat)SCREEN_SIZE / (GLfloat)SCREEN_SIZE, 1.0, 1000.0);
@@ -231,7 +233,7 @@ void init(void)
 		}
 	}
 
-	for (int i = 0; i < 6; i++) {															//牆壁
+	for (int i = 0; i < 6; i++) {															//平行牆壁
 		g_pHorizontalWall[i] = new CQuad;
 #ifdef MULTITEXTURE
 		g_pHorizontalWall[i]->SetTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
@@ -273,7 +275,8 @@ void init(void)
 			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(20, 1, 20));
 		}
 	}
-	for (int i = 0; i < 6; i++) {
+
+	for (int i = 0; i < 6; i++) {															//垂直牆壁
 		g_pVerticalWall[i] = new CQuad;
 #ifdef MULTITEXTURE
 		g_pVerticalWall[i]->SetTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
@@ -284,37 +287,38 @@ void init(void)
 		// 設定貼圖
 		g_pVerticalWall[i]->SetMaterials(vec4(0), vec4(0.85f, 0.85f, 0.15f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		g_pVerticalWall[i]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
-		if (i == 0) {
+		if (i == 0) {																	//左下牆
 			vT.x = 0; vT.y = 0; vT.z = -20.0f;
 			mxT = Translate(vT);
 			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
 		}
-		else if (i == 1) {
+		else if (i == 1) {																//左上牆
 			vT.x = 20.0f; vT.y = 0; vT.z = -20.0f;
 			mxT = Translate(vT);
 			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
 		}
-		else if (i == 2) {
+		else if (i == 2) {																//中下牆
 			vT.x = 0; vT.y = 0; vT.z = 0;
 			mxT = Translate(vT);
 			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
 		}
-		else if (i == 3) {
+		else if (i == 3) {																//中上牆
 			vT.x = 20.0f; vT.y = 0; vT.z = 0;
 			mxT = Translate(vT);
 			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
 		}
-		else if (i == 4) {
+		else if (i == 4) {																//右下牆
 			vT.x = 0; vT.y = 0; vT.z = 20.0f;
 			mxT = Translate(vT);
 			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
 		}
-		else if (i == 5) {
+		else if (i == 5) {																//右上牆
 			vT.x = 20.0f; vT.y = 0; vT.z = 20.0f;
 			mxT = Translate(vT);
 			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
 		}
 	}
+
 	for (int i = 0; i < 7; i++) {
 		g_pFrontWall[i] = new CQuad;
 #ifdef MULTITEXTURE
@@ -331,14 +335,15 @@ void init(void)
 		g_pFrontWall[i]->SetMaterials(vec4(0), vec4(0.15f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		g_pFrontWall[i]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
 	}
+
+	// 設定 Cube
 	g_pCube = new CSolidCube;
 	g_pCube->SetTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
 	g_pCube->SetShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
 	g_pCube->SetShader();
-	// 設定 Cube
-	vT.x = 4.0f; vT.y = 1.0f; vT.z = -0.5f;
+	vT.x = 10.0f; vT.y = 1.0f; vT.z = 10.0f;
 	mxT = Translate(vT);
-	mxT._m[0][0] = 2.0f; mxT._m[1][1] = 2.0f; mxT._m[2][2] = 2.0f;
+	mxT._m[0][0] = 5.0f; mxT._m[1][1] = 5.0f; mxT._m[2][2] = 5.0f;
 	g_pCube->SetTRSMatrix(mxT);
 	g_pCube->SetShadingMode(GOURAUD_SHADING);
 	// materials
@@ -384,6 +389,7 @@ void init(void)
 	g_pObj2->SetShadingMode(GOURAUD_SHADING);
 	g_pObj2->SetMaterials(vec4(0.55f, 0.55f, 0.55f, 1.0f), vec4(0.85f, 0.5, 0.5f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	g_pObj2->SetKaKdKsShini(0.85f, 0.8f, 0.8f, 2);
+
 	//animal test
 	// For g_pAimal3
 	g_pAimal[2] = new CQuad;
@@ -754,11 +760,14 @@ void Win_SpecialKeyboard(int key, int x, int y) {
 		if (eye.x > 3.0f && eye.x < 5.0f && eye.z > -1.5f && eye.z < 0.5f) {
 			g_bAutoRotating = !g_bAutoRotating;
 		}
-		if (eye.x > -8.0f && eye.x < 133.0f && eye.z > -8.0f && eye.z < 8.0f) {
+		if (eye.x <= (WALKING_SPACE + 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= -WALKING_SPACE) {
 			eye = eye + cameraSpeed * normalize(vec4(at.x, 0, at.z, 0));
 		}
-		else {
-			eye = eye - 2 * cameraSpeed * normalize(vec4(at.x, 0, at.z, 0));
+		else {	// 修正卡牆
+			if (eye.x > (WALKING_SPACE + 10.0f)) eye.x = (WALKING_SPACE + 10.0f);
+			else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
+			if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
+			else if (eye.z < -WALKING_SPACE) eye.z = -WALKING_SPACE;
 		}
 		camera->updateViewLookAt(eye, eye + at);
 
@@ -767,12 +776,16 @@ void Win_SpecialKeyboard(int key, int x, int y) {
 		if (eye.x > 3.0f && eye.x < 5.0f && eye.z > -1.5f && eye.z < 0.5f) {
 			g_bAutoRotating = !g_bAutoRotating;
 		}
-		if (eye.x > -8.0f && eye.x < 133.0f && eye.z > -8.0f && eye.z < 8.0f) {
+		if (eye.x <= (WALKING_SPACE + 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= -WALKING_SPACE) {
 
 			eye = eye - cameraSpeed * normalize(vec4(at.x, 0, at.z, 0));
+
 		}
-		else {
-			eye = eye + 2 * cameraSpeed * normalize(vec4(at.x, 0, at.z, 0));
+		else {	// 修正卡牆
+			if (eye.x > (WALKING_SPACE + 10.0f)) eye.x = (WALKING_SPACE + 10.0f);
+			else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
+			if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
+			else if (eye.z < -WALKING_SPACE) eye.z = -WALKING_SPACE;
 		}
 		camera->updateViewLookAt(eye, eye + at);
 		break;
@@ -780,13 +793,15 @@ void Win_SpecialKeyboard(int key, int x, int y) {
 		if (eye.x > 3.0f && eye.x < 5.0f && eye.z > -1.5f && eye.z < 0.5f) {
 			g_bAutoRotating = !g_bAutoRotating;
 		}
-		if (eye.x > -8.0f && eye.x < 133.0f && eye.z > -8.0f && eye.z < 8.0f) {
+		if (eye.x <= (WALKING_SPACE + 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= -WALKING_SPACE) {
 
 			eye = eye + cameraSpeed * normalize(vec4(sin(g_fTheta) * sin(g_fPhi + M_PI / 2), 0, sin(g_fTheta) * cos(g_fPhi + M_PI / 2), 0));
 		}
-		else {
-			eye = eye - 2 * cameraSpeed * normalize(vec4(sin(g_fTheta) * sin(g_fPhi + M_PI / 2), 0, sin(g_fTheta) * cos(g_fPhi + M_PI / 2), 0));
-
+		else {	// 修正卡牆
+			if (eye.x > (WALKING_SPACE + 10.0f)) eye.x = (WALKING_SPACE + 10.0f);
+			else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
+			if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
+			else if (eye.z < -WALKING_SPACE) eye.z = -WALKING_SPACE;
 		}
 		camera->updateViewLookAt(eye, eye + at);
 
@@ -795,13 +810,15 @@ void Win_SpecialKeyboard(int key, int x, int y) {
 		if (eye.x > 3.0f && eye.x < 5.0f && eye.z > -1.5f && eye.z < 0.5f) {
 			g_bAutoRotating = !g_bAutoRotating;
 		}
-		if (eye.x > -8.0f && eye.x < 133.0f && eye.z > -8.0f && eye.z < 8.0f) {
+		if (eye.x <= (WALKING_SPACE + 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= -WALKING_SPACE) {
 
 			eye = eye - cameraSpeed * normalize(vec4(sin(g_fTheta) * sin(g_fPhi + M_PI / 2), 0, sin(g_fTheta) * cos(g_fPhi + M_PI / 2), 0));
 		}
-		else {
-			eye = eye + 2 * cameraSpeed * normalize(vec4(sin(g_fTheta) * sin(g_fPhi + M_PI / 2), 0, sin(g_fTheta) * cos(g_fPhi + M_PI / 2), 0));
-
+		else {	// 修正卡牆
+			if (eye.x > (WALKING_SPACE + 10.0f)) eye.x = (WALKING_SPACE + 10.0f);
+			else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
+			if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
+			else if (eye.z < -WALKING_SPACE) eye.z = -WALKING_SPACE;
 		}
 		camera->updateViewLookAt(eye, eye + at);
 
