@@ -30,12 +30,12 @@ mat4 g_mxModelView(1.0f);
 mat4 g_mxProjection;
 
 // For Objects
-CQuad* g_pFloor[6];
+CQuad* g_pFloor[4];
 CSolidCube* g_pCube;
 CSolidSphere* g_pSphere;
 // wall
-CQuad* g_pLeftWall[6];
-CQuad* g_pRightWall[6];
+CQuad* g_pHorizontalWall[6];
+CQuad* g_pVerticalWall[6];
 CQuad* g_pFrontWall[7];
 // For View Point
 GLfloat g_fRadius = 8.0;
@@ -57,23 +57,25 @@ float g_fElapsedTime = 0;
 float g_fLightRadius = 6;
 float g_fLightTheta = 0;
 
-float g_fLightR = 0.85f;
-float g_fLightG = 0.85f;
-float g_fLightB = 0.85f;
+float g_fLightR = 0.95f;
+float g_fLightG = 0.95f;
+float g_fLightB = 0.95f;
 
 LightSource g_Light1 = {
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // diffuse
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-	point4(6.0f, 5.0f, 0.0f, 1.0f),   // position
+	point4(5.0f, 4.0f, 0.0f, 1.0f),   // position
 	point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
+	vec3(0.0f, 0.0f, 0.0f),			  // spotTarget
 	vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
 	2.0f,	// spotExponent(parameter e); cos^(e)(phi) 
 	45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
 	0.707f,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
 	1,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
 	0,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
-	0		// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
+	0,	// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
+	LightType::OMNI_LIGHT
 };
 LightSource g_Light2 = {
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
@@ -81,13 +83,15 @@ LightSource g_Light2 = {
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
 	point4(25.0f, 20.0f, 0.0f, 1.0f),   // position
 	point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
+	vec3(0.0f, 0.0f, 0.0f),			  // spotTarget
 	vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
 	2.0f,	// spotExponent(parameter e); cos^(e)(phi) 
 	45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
 	0.707f,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
 	1,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
 	0,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
-	0		// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
+	0,	// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
+	LightType::SPOT_LIGHT
 };
 LightSource g_Light3 = {
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
@@ -194,51 +198,122 @@ void init(void)
 	g_uiCheeseNormalTexID = texturepool->AddTexture("texture/CheeseNormalMap.png");
 	g_uiDianosourNormalTexID = texturepool->AddTexture("texture/raptor_normal.png");
 
-	// 產生物件的實體	
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 4; i++) {															// 地板
 		g_pFloor[i] = new CQuad;
 #ifdef MULTITEXTURE
 		g_pFloor[i]->SetTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
 #endif
 		g_pFloor[i]->SetShader();
-		vT.x = i * 25; vT.z = 0; vT.z = 0;
-		mxT = Translate(vT);
-		g_pFloor[i]->SetTRSMatrix(mxT * Scale(25, 1, 25));
 		g_pFloor[i]->SetShadingMode(GOURAUD_SHADING);
 		g_pFloor[i]->SetTiling(4, 4);
 		// 設定貼圖
 		g_pFloor[i]->SetMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		g_pFloor[i]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
+		if (i == 0) {
+			vT.x = 0; vT.y = 0; vT.z = 10;
+			mxT = Translate(vT);
+			g_pFloor[i]->SetTRSMatrix(mxT * Scale(20, 1, 20));
+		}
+		else if (i == 1) {
+			vT.x = 20; vT.y = 0; vT.z = 10;
+			mxT = Translate(vT);
+			g_pFloor[i]->SetTRSMatrix(mxT * Scale(20, 1, 20));
+		}
+		else if (i == 2) {
+			vT.x = 0; vT.y = 0; vT.z = -10;
+			mxT = Translate(vT);
+			g_pFloor[i]->SetTRSMatrix(mxT * Scale(20, 1, 20));
+		}
+		else if (i == 3) {
+			vT.x = 20; vT.y = 0; vT.z = -10;
+			mxT = Translate(vT);
+			g_pFloor[i]->SetTRSMatrix(mxT * Scale(20, 1, 20));
+		}
+	}
+
+	for (int i = 0; i < 6; i++) {															//牆壁
+		g_pHorizontalWall[i] = new CQuad;
+#ifdef MULTITEXTURE
+		g_pHorizontalWall[i]->SetTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
+#endif
+		g_pHorizontalWall[i]->SetShader();
+		g_pHorizontalWall[i]->SetShadingMode(GOURAUD_SHADING);
+		g_pHorizontalWall[i]->SetTiling(4, 4);
+		// 設定貼圖
+		g_pHorizontalWall[i]->SetMaterials(vec4(0), vec4(0.15f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		g_pHorizontalWall[i]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
+		if (i == 0) {
+			vT.x = -10; vT.y = 0; vT.z = -10.0f;
+			mxT = Translate(vT);
+			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(20, 1, 20));
+		}
+		else if (i == 1) {
+			vT.x = -10; vT.y = 0; vT.z = 10;
+			mxT = Translate(vT);
+			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(20, 1, 20));
+		}
+		else if (i == 2) {
+			vT.x = 10; vT.y = 0; vT.z = -10;
+			mxT = Translate(vT);
+			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(20, 1, 20));
+		}
+		else if (i == 3) {
+			vT.x = 10; vT.y = 0; vT.z = 10;
+			mxT = Translate(vT);
+			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(20, 1, 20));
+		}
+		else if (i == 4) {
+			vT.x = 30; vT.y = 0; vT.z = -10;
+			mxT = Translate(vT);
+			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(20, 1, 20));
+		}
+		else if (i == 5) {
+			vT.x = 30; vT.y = 0; vT.z = 10;
+			mxT = Translate(vT);
+			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(20, 1, 20));
+		}
 	}
 	for (int i = 0; i < 6; i++) {
-		g_pLeftWall[i] = new CQuad;
+		g_pVerticalWall[i] = new CQuad;
 #ifdef MULTITEXTURE
-		g_pLeftWall[i]->SetTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
+		g_pVerticalWall[i]->SetTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
 #endif
-		g_pLeftWall[i]->SetShader();
-		vT.x = i * 25; vT.y = 0; vT.z = -10.0f;
-		mxT = Translate(vT);
-		g_pLeftWall[i]->SetTRSMatrix(mxT * RotateX(90.0f) * Scale(25, 1, 25));
-		g_pLeftWall[i]->SetShadingMode(GOURAUD_SHADING);
-		g_pLeftWall[i]->SetTiling(4, 4);
+		g_pVerticalWall[i]->SetShader();
+		g_pVerticalWall[i]->SetShadingMode(GOURAUD_SHADING);
+		g_pVerticalWall[i]->SetTiling(4, 4);
 		// 設定貼圖
-		g_pLeftWall[i]->SetMaterials(vec4(0), vec4(0.85f, 0.15f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		g_pLeftWall[i]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
-	}
-	for (int i = 0; i < 6; i++) {
-		g_pRightWall[i] = new CQuad;
-#ifdef MULTITEXTURE
-		g_pRightWall[i]->SetTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
-#endif
-		g_pRightWall[i]->SetShader();
-		vT.x = i * 25; vT.y = 0; vT.z = 10.0f;
-		mxT = Translate(vT);
-		g_pRightWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(25, 1, 25));
-		g_pRightWall[i]->SetShadingMode(GOURAUD_SHADING);
-		g_pRightWall[i]->SetTiling(4, 4);
-		// 設定貼圖
-		g_pRightWall[i]->SetMaterials(vec4(0), vec4(0.85f, 0.85f, 0.15f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		g_pRightWall[i]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
+		g_pVerticalWall[i]->SetMaterials(vec4(0), vec4(0.85f, 0.85f, 0.15f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		g_pVerticalWall[i]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
+		if (i == 0) {
+			vT.x = 0; vT.y = 0; vT.z = -20.0f;
+			mxT = Translate(vT);
+			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
+		}
+		else if (i == 1) {
+			vT.x = 20.0f; vT.y = 0; vT.z = -20.0f;
+			mxT = Translate(vT);
+			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
+		}
+		else if (i == 2) {
+			vT.x = 0; vT.y = 0; vT.z = 0;
+			mxT = Translate(vT);
+			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
+		}
+		else if (i == 3) {
+			vT.x = 20.0f; vT.y = 0; vT.z = 0;
+			mxT = Translate(vT);
+			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
+		}
+		else if (i == 4) {
+			vT.x = 0; vT.y = 0; vT.z = 20.0f;
+			mxT = Translate(vT);
+			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
+		}
+		else if (i == 5) {
+			vT.x = 20.0f; vT.y = 0; vT.z = 20.0f;
+			mxT = Translate(vT);
+			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
+		}
 	}
 	for (int i = 0; i < 7; i++) {
 		g_pFrontWall[i] = new CQuad;
@@ -288,7 +363,7 @@ void init(void)
 	g_pSphere->SetColor(vec4(0.9f, 0.9f, 0.9f, 1.0f));
 
 
-	g_pObj1 = new CObjNew("./Common/cheese.obj");
+	g_pObj1 = new CObjNew("./Common/Well.obj");
 	g_pObj1->SetTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
 	g_pObj1->SetShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
 	g_pObj1->SetShader();
@@ -299,7 +374,7 @@ void init(void)
 	g_pObj1->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0.85f, 0.8, 0.9f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	g_pObj1->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
 	//obj2
-	g_pObj2 = new CObjNew("./Common/Raptor.obj");
+	g_pObj2 = new CObjNew("./Common/Well.obj");
 	g_pObj2->SetTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
 	g_pObj2->SetShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
 	g_pObj2->SetShader();
@@ -371,14 +446,17 @@ void init(void)
 		g_pLight[0]->SetColor(g_Light1.diffuse);
 	}
 
+
 	// 因為本範例不會動到 Projection Matrix 所以在這裡設定一次即可
 	// 就不寫在 OnFrameMove 中每次都 Check
 	bool bPDirty;
 	mat4 mpx = camera->getProjectionMatrix(bPDirty);
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 4; i++) {
 		g_pFloor[i]->SetProjectionMatrix(mpx);
-		g_pLeftWall[i]->SetProjectionMatrix(mpx);
-		g_pRightWall[i]->SetProjectionMatrix(mpx);
+	}
+	for (int i = 0; i < 6; i++) {
+		g_pHorizontalWall[i]->SetProjectionMatrix(mpx);
+		g_pVerticalWall[i]->SetProjectionMatrix(mpx);
 	}
 	for (int i = 0; i < 7; i++) {
 		g_pFrontWall[i]->SetProjectionMatrix(mpx);
@@ -416,15 +494,13 @@ void GL_Display(void)
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[0]); // 與 Diffuse Map 結合
 	glActiveTexture(GL_TEXTURE1); // select active texture 1
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[2]); // 與 Light Map 結合
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 4; i++) {
 		g_pFloor[i]->Draw();
-		g_pLeftWall[i]->Draw();
-		g_pRightWall[i]->Draw();
 	}
-	for (int i = 0; i < 7; i++) {
-		g_pFrontWall[i]->Draw();
+	for (int i = 0; i < 6; i++) {
+		g_pHorizontalWall[i]->Draw();
+		g_pVerticalWall[i]->Draw();
 	}
-
 	glActiveTexture(GL_TEXTURE0);
 	//  glBindTexture(GL_TEXTURE_2D, 0);
 #endif
@@ -522,11 +598,12 @@ void onFrameMove(float delta)
 	auto camera = CCamera::getInstance();
 	mvx = camera->getViewMatrix(bVDirty);
 	if (bVDirty) {
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 4; i++) {
 			g_pFloor[i]->SetViewMatrix(mvx);
-			g_pLeftWall[i]->SetViewMatrix(mvx);
-			g_pRightWall[i]->SetViewMatrix(mvx);
-
+		}
+		for (int i = 0; i < 6; i++) {
+			g_pHorizontalWall[i]->SetViewMatrix(mvx);
+			g_pVerticalWall[i]->SetViewMatrix(mvx);
 		}
 		for (int i = 0; i < 7; i++) {
 			g_pFrontWall[i]->SetViewMatrix(mvx);
@@ -551,33 +628,26 @@ void onFrameMove(float delta)
 	}
 
 	// 如果需要重新計算時，在這邊計算每一個物件的顏色
-	//for (int i = 0; i < 6; i++) {
 	g_pFloor[0]->Update(delta, g_Light1);
-	g_pLeftWall[0]->Update(delta, g_Light1);
-	g_pRightWall[0]->Update(delta, g_Light1);
+	g_pHorizontalWall[0]->Update(delta, g_Light1);
+	g_pVerticalWall[0]->Update(delta, g_Light1);
 	g_pFrontWall[0]->Update(delta, g_Light1);
 	g_pFloor[1]->Update(delta, g_Light2);
-	g_pLeftWall[1]->Update(delta, g_Light2);
-	g_pRightWall[1]->Update(delta, g_Light2);
+	g_pHorizontalWall[1]->Update(delta, g_Light2);
+	g_pVerticalWall[1]->Update(delta, g_Light2);
 	g_pFrontWall[1]->Update(delta, g_Light1);
 	g_pFloor[2]->Update(delta, g_Light3);
-	g_pLeftWall[2]->Update(delta, g_Light3);
-	g_pRightWall[2]->Update(delta, g_Light3);
+	g_pHorizontalWall[2]->Update(delta, g_Light3);
+	g_pVerticalWall[2]->Update(delta, g_Light3);
 	g_pFrontWall[2]->Update(delta, g_Light2);
 	g_pFloor[3]->Update(delta, g_Light4);
-	g_pLeftWall[3]->Update(delta, g_Light4);
-	g_pRightWall[3]->Update(delta, g_Light4);
+	g_pHorizontalWall[3]->Update(delta, g_Light4);
+	g_pVerticalWall[3]->Update(delta, g_Light4);
 	g_pFrontWall[3]->Update(delta, g_Light3);
-	g_pFloor[4]->Update(delta, g_Light5);
-	g_pLeftWall[4]->Update(delta, g_Light5);
-	g_pRightWall[4]->Update(delta, g_Light5);
-	g_pFrontWall[4]->Update(delta, g_Light4);
-	g_pFloor[5]->Update(delta, g_Light6);
-	g_pLeftWall[5]->Update(delta, g_Light6);
-	g_pRightWall[5]->Update(delta, g_Light6);
-	g_pFrontWall[5]->Update(delta, g_Light5);
-	g_pFrontWall[6]->Update(delta, g_Light6);
-	//}
+	g_pHorizontalWall[4]->Update(delta, g_Light5);
+	g_pVerticalWall[4]->Update(delta, g_Light5);
+	g_pHorizontalWall[5]->Update(delta, g_Light6);
+	g_pVerticalWall[5]->Update(delta, g_Light6);
 
 	g_pCube->Update(delta, g_Light1);
 	g_pSphere->Update(delta, g_Light2);
@@ -679,7 +749,7 @@ void Win_SpecialKeyboard(int key, int x, int y) {
 
 	vec4 up = camera->getUp();
 	switch (key) {
-	case GLUT_KEY_UP:		// 目前按下的是向左方向鍵
+	case GLUT_KEY_UP:		// 目前按下的是向上方向鍵
 		//printf("eye:%f\n", eye.x);
 		if (eye.x > 3.0f && eye.x < 5.0f && eye.z > -1.5f && eye.z < 0.5f) {
 			g_bAutoRotating = !g_bAutoRotating;
@@ -693,7 +763,7 @@ void Win_SpecialKeyboard(int key, int x, int y) {
 		camera->updateViewLookAt(eye, eye + at);
 
 		break;
-	case GLUT_KEY_DOWN:	// 目前按下的是向右方向鍵
+	case GLUT_KEY_DOWN:	// 目前按下的是向下方向鍵
 		if (eye.x > 3.0f && eye.x < 5.0f && eye.z > -1.5f && eye.z < 0.5f) {
 			g_bAutoRotating = !g_bAutoRotating;
 		}
@@ -721,7 +791,7 @@ void Win_SpecialKeyboard(int key, int x, int y) {
 		camera->updateViewLookAt(eye, eye + at);
 
 		break;
-	case GLUT_KEY_RIGHT:		// 目前按下的是向左方向鍵
+	case GLUT_KEY_RIGHT:		// 目前按下的是向右方向鍵
 		if (eye.x > 3.0f && eye.x < 5.0f && eye.z > -1.5f && eye.z < 0.5f) {
 			g_bAutoRotating = !g_bAutoRotating;
 		}
@@ -789,7 +859,7 @@ int main(int argc, char** argv)
 	glutInitContextVersion(3, 2);
 	glutInitContextProfile(GLUT_CORE_PROFILE);
 
-	glutCreateWindow("Compositing and Blending");
+	glutCreateWindow("Show Room");
 
 	// The glewExperimental global switch can be turned on by setting it to GL_TRUE before calling glewInit(), 
 	// which ensures that all extensions with valid entry points will be exposed.

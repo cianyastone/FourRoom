@@ -33,7 +33,7 @@
     <ClCompile Include="png_loader.cpp">
       <Filter>TextureLoader</Filter>
     </ClCompile>
-    <ClCompile Include="Example5.cpp">
+    <ClCompile Include="ShowRoom.cpp">
       <Filter>原始程式檔</Filter>
     </ClCompile>
     <ClCompile Include="Common\CCamera.cpp">
@@ -54,9 +54,6 @@
     <ClCompile Include="Common\CQuad.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="Common\CShaderPool.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
     <ClCompile Include="Common\CShape.cpp">
       <Filter>Common</Filter>
     </ClCompile>
@@ -64,9 +61,6 @@
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Common\CSolidSphere.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="Common\CSolidTorus.cpp">
       <Filter>Common</Filter>
     </ClCompile>
     <ClCompile Include="Common\CTexturePool.cpp">
@@ -110,9 +104,6 @@
     <ClInclude Include="Common\CQuad.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="Common\CShaderPool.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="Common\CShape.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -120,9 +111,6 @@
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\CSolidSphere.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\CSolidTorus.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="Common\CTexturePool.h">
@@ -164,12 +152,6 @@
       <Filter>原始程式檔</Filter>
     </None>
     <None Include="vsCubeMapping.glsl">
-      <Filter>原始程式檔</Filter>
-    </None>
-    <None Include="fsVtxColor.glsl">
-      <Filter>原始程式檔</Filter>
-    </None>
-    <None Include="vsVtxColor.glsl">
       <Filter>原始程式檔</Filter>
     </None>
   </ItemGroup>

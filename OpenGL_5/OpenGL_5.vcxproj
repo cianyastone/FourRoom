@@ -90,16 +90,14 @@
     <ClCompile Include="Common\CObjNew.cpp" />
     <ClCompile Include="Common\common.cpp" />
     <ClCompile Include="Common\CQuad.cpp" />
-    <ClCompile Include="Common\CShaderPool.cpp" />
     <ClCompile Include="Common\CShape.cpp" />
     <ClCompile Include="Common\CSolidCube.cpp" />
     <ClCompile Include="Common\CSolidSphere.cpp" />
-    <ClCompile Include="Common\CSolidTorus.cpp" />
     <ClCompile Include="Common\CTexturePool.cpp" />
     <ClCompile Include="Common\CWireCube.cpp" />
     <ClCompile Include="Common\CWireSphere.cpp" />
     <ClCompile Include="Common\Timer.cpp" />
-    <ClCompile Include="Example5.cpp" />
+    <ClCompile Include="ShowRoom.cpp" />
     <ClCompile Include="InitShader.cpp" />
     <ClCompile Include="png_loader.cpp" />
   </ItemGroup>
@@ -109,11 +107,9 @@
     <ClInclude Include="Common\CLineSegment.h" />
     <ClInclude Include="Common\CObjNew.h" />
     <ClInclude Include="Common\CQuad.h" />
-    <ClInclude Include="Common\CShaderPool.h" />
     <ClInclude Include="Common\CShape.h" />
     <ClInclude Include="Common\CSolidCube.h" />
     <ClInclude Include="Common\CSolidSphere.h" />
-    <ClInclude Include="Common\CSolidTorus.h" />
     <ClInclude Include="Common\CTexturePool.h" />
     <ClInclude Include="Common\CWireCube.h" />
     <ClInclude Include="Common\CWireSphere.h" />
@@ -129,12 +125,10 @@
     <None Include="fsNormalMapLighting.glsl" />
     <None Include="fsPerPixelLighting.glsl" />
     <None Include="fsPerVtxLighting.glsl" />
-    <None Include="fsVtxColor.glsl" />
     <None Include="vsCubeMapping.glsl" />
     <None Include="vsNormalMapLighting.glsl" />
     <None Include="vsPerPixelLighting.glsl" />
     <None Include="vsPerVtxLighting.glsl" />
-    <None Include="vsVtxColor.glsl" />
   </ItemGroup>
   <ItemGroup>
     <Library Include="SOIL\Release\SOIL.lib" />
