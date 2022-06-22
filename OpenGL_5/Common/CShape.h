@@ -107,47 +107,47 @@ protected:
 	int		m_iMode;	 // 0: Flat shading, 1: Gouraud shading, 0 for default
 
 	void	CreateBufferObject();
-	void	DrawingSetShader();
-	void	DrawingWithoutSetShader();
+	void	drawingsetShader();
+	void	drawingWithoutsetShader();
 	void    UpdateMultiLight(const int LightNum);
 
 public:
 	CShape();
 	virtual ~CShape();
-	virtual void Draw() = 0;
-	virtual void DrawW() = 0; // Drawing without setting shaders
+	virtual void draw() = 0;
+	virtual void drawW() = 0; // drawing without setting shaders
 	virtual void Update(float dt, const LightSource &lights) = 0;
 	virtual void Update(float dt) = 0; // 不計算光源的照明
 
-	void SetShaderName(const char vxShader[], const char fsShader[]);
-	void SetShader(GLuint uiShaderHandle = MAX_UNSIGNED_INT);
-	void SetColor(vec4 vColor);
-	void SetViewMatrix(mat4 &mat);
-	void SetProjectionMatrix(mat4 &mat);
-	void SetTRSMatrix(mat4 &mat);
-	void SetTextureLayer(int texlayer);
+	void setShaderName(const char vxShader[], const char fsShader[]);
+	void setShader(GLuint uiShaderHandle = MAX_UNSIGNED_INT);
+	void setColor(vec4 vColor);
+	void setViewMatrix(mat4 &mat);
+	void setProjectionMatrix(mat4 &mat);
+	void setTRSMatrix(mat4 &mat);
+	void setTextureLayer(int texlayer);
 
 	// For setting materials 
-	void SetMaterials(color4 ambient, color4 diffuse, color4 specular);
-	void SetKaKdKsShini(float ka, float kd, float ks, float shininess); // ka kd ks shininess
+	void setMaterials(color4 ambient, color4 diffuse, color4 specular);
+	void setKaKdKsShini(float ka, float kd, float ks, float shininess); // ka kd ks shininess
 
 	// For Lighting Calculation
-	void SetShadingMode(int iMode) {m_iMode = iMode;}
+	void setShadingMode(int iMode) {m_iMode = iMode;}
 	vec4 PhongReflectionModel(vec4 vPoint, vec3 vNormal, const LightSource &lights);
 
 
 	// For controlling texture mapping
-	void SetMirror(bool uAxis, bool vAxis); // U軸 與 V軸 是否要鏡射
-	void SetTiling(float uTiling, float vTiling);  // 對 U軸 與 V軸 進行拼貼的縮放
+	void setMirror(bool uAxis, bool vAxis); // U軸 與 V軸 是否要鏡射
+	void setTiling(float uTiling, float vTiling);  // 對 U軸 與 V軸 進行拼貼的縮放
 
-	void SetLightingDisable() {m_iLighting = 0;}
+	void setLightingDisable() {m_iLighting = 0;}
 
 	// For Cube Map
 #ifdef CUBIC_MAP
-	void SetCubeMapTexName(GLuint uiTexName) {
+	void setCubeMapTexName(GLuint uiTexName) {
 		m_uiCubeMapTexName = uiTexName;
 	}
-	void SetViewPosition(point4 vEye) {
+	void setViewPosition(point4 vEye) {
 			m_v4Eye = vEye;
 	}
 #endif

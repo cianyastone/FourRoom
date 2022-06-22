@@ -91,7 +91,7 @@ void CShape::CreateBufferObject()
 #endif
 }
 
-void CShape::SetShader(GLuint uiShaderHandle)
+void CShape::setShader(GLuint uiShaderHandle)
 {
 	// 改放置這裡, 方便每一個物件的設定
 	CreateBufferObject();
@@ -188,7 +188,7 @@ void CShape::SetShader(GLuint uiShaderHandle)
 	glBindBuffer( GL_ARRAY_BUFFER, 0 );
 }
 
-void CShape::DrawingSetShader()
+void CShape::drawingsetShader()
 {
 	glUseProgram( m_uiProgram );
 	glBindVertexArray( m_uiVao );
@@ -222,7 +222,7 @@ void CShape::DrawingSetShader()
 }
 
 // 此處預設使用前一個描繪物件所使用的 Shader
-void CShape::DrawingWithoutSetShader()
+void CShape::drawingWithoutsetShader()
 {
 	glBindVertexArray( m_uiVao );
 	glUniformMatrix4fv( m_uiModelView, 1, GL_TRUE, m_mxMVFinal );
@@ -252,7 +252,7 @@ void CShape::DrawingWithoutSetShader()
 #endif
 }
 
-void CShape::SetShaderName(const char vxShader[], const char fsShader[])
+void CShape::setShaderName(const char vxShader[], const char fsShader[])
 {
 	int len;
 	len = strlen(vxShader);
@@ -264,25 +264,25 @@ void CShape::SetShaderName(const char vxShader[], const char fsShader[])
 	memcpy(m_pFSshader, fsShader, len+1);
 }
 
-void CShape::SetViewMatrix(mat4 &mat)
+void CShape::setViewMatrix(mat4 &mat)
 {
 	m_mxView = mat;
 	m_bViewUpdated = true;
 }
 
-void CShape::SetTRSMatrix(mat4 &mat)
+void CShape::setTRSMatrix(mat4 &mat)
 {
 	m_mxTRS = mat;
 	m_bTRSUpdated = true;
 }
 
-void CShape::SetProjectionMatrix(mat4 &mat)
+void CShape::setProjectionMatrix(mat4 &mat)
 {
 	m_mxProjection = mat;
 	m_bProjUpdated = true;
 }
 
-void CShape::SetColor(vec4 vColor)
+void CShape::setColor(vec4 vColor)
 {
 	m_fColor[0] = vColor.x;
 	m_fColor[1] = vColor.y;
@@ -291,19 +291,19 @@ void CShape::SetColor(vec4 vColor)
 	glUniform4fv(m_uiColor, 1, m_fColor); 
 }
 
-void CShape::SetTextureLayer(int texlayer)
+void CShape::setTextureLayer(int texlayer)
 {
 	m_iTexLayer = texlayer;
 }
 
-void CShape::SetMaterials(color4 ambient, color4 diffuse, color4 specular)
+void CShape::setMaterials(color4 ambient, color4 diffuse, color4 specular)
 {
 	m_Material.ambient =  ambient;
 	m_Material.diffuse =  diffuse;
 	m_Material.specular = specular;
 }
 
-void CShape::SetKaKdKsShini(float ka, float kd, float ks, float shininess) // ka kd ks shininess
+void CShape::setKaKdKsShini(float ka, float kd, float ks, float shininess) // ka kd ks shininess
 {
 	m_Material.ka = ka;
 	m_Material.kd = kd;
@@ -325,7 +325,7 @@ vec4 CShape::PhongReflectionModel(vec4 vPoint, vec3 vNormal, const LightSource &
 	//    只有物件的 rotation 會改變 Normal 的方向，乘上物件的 Final ModelView Matrix，同時轉換到鏡頭座標
 	//    m_mxMV3X3Final 在 Update 處取自  m_mxMVFinal 的左上的 3X3 部分, 不需要位移量
 #ifdef GENERAL_CASE
-	//	  m_mxITMV 已經在呼叫 SetModelViewMatrix(mat4 &mat) 與 SetTRSMatrix(mat4 &mat) 就同時計算
+	//	  m_mxITMV 已經在呼叫 setModelViewMatrix(mat4 &mat) 與 setTRSMatrix(mat4 &mat) 就同時計算
 	//    此處就不用再重新計算
 	vN = m_mxITMV * vNormal;
 #else
@@ -383,7 +383,7 @@ vec4 CShape::PhongReflectionModel(vec4 vPoint, vec3 vNormal, const LightSource &
 
 
 // For controlling texture mapping ----------------
-void CShape::SetMirror(bool uAxis, bool vAxis) // U軸 與 V軸 是否要鏡射
+void CShape::setMirror(bool uAxis, bool vAxis) // U軸 與 V軸 是否要鏡射
 {
 	if( uAxis )  {
 		if( vAxis ) { // U V 軸同時鏡射
@@ -408,7 +408,7 @@ void CShape::SetMirror(bool uAxis, bool vAxis) // U軸 與 V軸 是否要鏡射
 
 }
 
-void CShape::SetTiling(float uTiling, float vTiling)  // 對 U軸 與 V軸 進行拼貼的縮放
+void CShape::setTiling(float uTiling, float vTiling)  // 對 U軸 與 V軸 進行拼貼的縮放
 {
 	for(int i = 0 ; i < m_iNumVtx ; i++ ) { // 將每一個 vertex 的貼圖座標用 1 去減
 		m_pTex1[i].x *= uTiling; m_pTex1[i].y *= vTiling;

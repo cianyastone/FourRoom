@@ -28,8 +28,8 @@ public:
 
 	void RenderWithFlatShading(const LightSource &lights);
 	void RenderWithGouraudShading(const LightSource &lights);
-	void Draw();
-	void DrawW(); // 呼叫不再次設定 Shader 的描繪方式
+	void draw();
+	void drawW(); // 呼叫不再次設定 Shader 的描繪方式
 };
 
 #endif

@@ -23,8 +23,8 @@ public:
 	void Update(float dt); // 不計算光源的照明
 	void RenderWithFlatShading(const LightSource &lights);
 	void RenderWithGouraudShading(const LightSource &lights);
-	void Draw();
-	void DrawW();
+	void draw();
+	void drawW();
 };
 
 #endif

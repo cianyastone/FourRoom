@@ -183,33 +183,33 @@ void init(void)
 	for (int i = 0; i < 4; i++) {															// 地板
 		g_pFloor[i] = new CQuad;
 #ifdef MULTITEXTURE
-		g_pFloor[i]->SetTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
+		g_pFloor[i]->setTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
 #endif
-		g_pFloor[i]->SetShader();
-		g_pFloor[i]->SetShadingMode(GOURAUD_SHADING);
-		g_pFloor[i]->SetTiling(4, 4);
+		g_pFloor[i]->setShader();
+		g_pFloor[i]->setShadingMode(GOURAUD_SHADING);
+		g_pFloor[i]->setTiling(4, 4);
 		// 設定貼圖
-		g_pFloor[i]->SetMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		g_pFloor[i]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
+		g_pFloor[i]->setMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		g_pFloor[i]->setKaKdKsShini(0, 0.8f, 0.5f, 1);
 		if (i == 0) {
 			vT.x = 0; vT.y = 0; vT.z = 10;
 			mxT = Translate(vT);
-			g_pFloor[i]->SetTRSMatrix(mxT * Scale(20, 1, 20));
+			g_pFloor[i]->setTRSMatrix(mxT * Scale(20, 1, 20));
 		}
 		else if (i == 1) {
 			vT.x = 20; vT.y = 0; vT.z = 10;
 			mxT = Translate(vT);
-			g_pFloor[i]->SetTRSMatrix(mxT * Scale(20, 1, 20));
+			g_pFloor[i]->setTRSMatrix(mxT * Scale(20, 1, 20));
 		}
 		else if (i == 2) {
 			vT.x = 0; vT.y = 0; vT.z = -10;
 			mxT = Translate(vT);
-			g_pFloor[i]->SetTRSMatrix(mxT * Scale(20, 1, 20));
+			g_pFloor[i]->setTRSMatrix(mxT * Scale(20, 1, 20));
 		}
 		else if (i == 3) {
 			vT.x = 20; vT.y = 0; vT.z = -10;
 			mxT = Translate(vT);
-			g_pFloor[i]->SetTRSMatrix(mxT * Scale(20, 1, 20));
+			g_pFloor[i]->setTRSMatrix(mxT * Scale(20, 1, 20));
 		}
 	}
 
@@ -217,43 +217,43 @@ void init(void)
 	for (int i = 0; i < 6; i++) {															//平行牆壁
 		g_pHorizontalWall[i] = new CQuad;
 #ifdef MULTITEXTURE
-		g_pHorizontalWall[i]->SetTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
+		g_pHorizontalWall[i]->setTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
 #endif
-		g_pHorizontalWall[i]->SetShader();
-		g_pHorizontalWall[i]->SetShadingMode(GOURAUD_SHADING);
-		g_pHorizontalWall[i]->SetTiling(4, 4);
+		g_pHorizontalWall[i]->setShader();
+		g_pHorizontalWall[i]->setShadingMode(GOURAUD_SHADING);
+		g_pHorizontalWall[i]->setTiling(4, 4);
 		// 設定貼圖
-		g_pHorizontalWall[i]->SetMaterials(vec4(0), vec4(0.15f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		g_pHorizontalWall[i]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
+		g_pHorizontalWall[i]->setMaterials(vec4(0), vec4(0.15f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		g_pHorizontalWall[i]->setKaKdKsShini(0, 0.8f, 0.5f, 1);
 		if (i == 0) {
 			vT.x = -10; vT.y = 0; vT.z = -10.0f;
 			mxT = Translate(vT);
-			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * RotateZ(270.0f) * Scale(20, 1, 20));
+			g_pHorizontalWall[i]->setTRSMatrix(mxT * RotateX(270.0f) * RotateZ(270.0f) * Scale(20, 1, 20));
 		}
 		else if (i == 1) {
 			vT.x = -10; vT.y = 0; vT.z = 10;
 			mxT = Translate(vT);
-			g_pHorizontalWall[1]->SetTRSMatrix(mxT * RotateX(90.0f) * RotateZ(270.0f) * Scale(20, 1, 20));
+			g_pHorizontalWall[1]->setTRSMatrix(mxT * RotateX(90.0f) * RotateZ(270.0f) * Scale(20, 1, 20));
 		}
 		else if (i == 2) {
 			vT.x = 10; vT.y = 0; vT.z = -8;
 			mxT = Translate(vT);
-			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * RotateZ(270.0f) * Scale(16, 1, 20));
+			g_pHorizontalWall[i]->setTRSMatrix(mxT * RotateX(270.0f) * RotateZ(270.0f) * Scale(16, 1, 20));
 		}
 		else if (i == 3) {
 			vT.x = 10; vT.y = 0; vT.z = 8;
 			mxT = Translate(vT);
-			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * RotateZ(90.0f) * Scale(16, 1, 20));
+			g_pHorizontalWall[i]->setTRSMatrix(mxT * RotateX(270.0f) * RotateZ(90.0f) * Scale(16, 1, 20));
 		}
 		else if (i == 4) {
 			vT.x = 30; vT.y = 0; vT.z = -10;
 			mxT = Translate(vT);
-			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateX(90.0f) * RotateZ(90.0f) * Scale(20, 1, 20));
+			g_pHorizontalWall[i]->setTRSMatrix(mxT * RotateX(90.0f) * RotateZ(90.0f) * Scale(20, 1, 20));
 		}
 		else if (i == 5) {
 			vT.x = 30; vT.y = 0; vT.z = 10;
 			mxT = Translate(vT);
-			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * RotateZ(90.0f) * Scale(20, 1, 20));
+			g_pHorizontalWall[i]->setTRSMatrix(mxT * RotateX(270.0f) * RotateZ(90.0f) * Scale(20, 1, 20));
 		}
 	}
 
@@ -261,43 +261,43 @@ void init(void)
 	for (int i = 0; i < 6; i++) {															//垂直牆壁
 		g_pVerticalWall[i] = new CQuad;
 #ifdef MULTITEXTURE
-		g_pVerticalWall[i]->SetTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
+		g_pVerticalWall[i]->setTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
 #endif
-		g_pVerticalWall[i]->SetShader();
-		g_pVerticalWall[i]->SetShadingMode(GOURAUD_SHADING);
-		g_pVerticalWall[i]->SetTiling(4, 4);
+		g_pVerticalWall[i]->setShader();
+		g_pVerticalWall[i]->setShadingMode(GOURAUD_SHADING);
+		g_pVerticalWall[i]->setTiling(4, 4);
 		// 設定貼圖
-		g_pVerticalWall[i]->SetMaterials(vec4(0), vec4(0.85f, 0.85f, 0.15f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		g_pVerticalWall[i]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
+		g_pVerticalWall[i]->setMaterials(vec4(0), vec4(0.85f, 0.85f, 0.15f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		g_pVerticalWall[i]->setKaKdKsShini(0, 0.8f, 0.5f, 1);
 		if (i == 0) {																	//左下牆
 			vT.x = 0; vT.y = 0; vT.z = -20.0f;
 			mxT = Translate(vT);
-			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(90.0f) * Scale(20, 1, 20));
+			g_pVerticalWall[i]->setTRSMatrix(mxT * RotateX(90.0f) * Scale(20, 1, 20));
 		}
 		else if (i == 1) {																//左上牆
 			vT.x = 20.0f; vT.y = 0; vT.z = -20.0f;
 			mxT = Translate(vT);
-			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(90.0f) * Scale(20, 1, 20));
+			g_pVerticalWall[i]->setTRSMatrix(mxT * RotateX(90.0f) * Scale(20, 1, 20));
 		}
 		else if (i == 2) {																//中下牆
 			vT.x = 2; vT.y = 0; vT.z = 0;
 			mxT = Translate(vT);
-			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(90.0f) * Scale(16, 1, 20));
+			g_pVerticalWall[i]->setTRSMatrix(mxT * RotateX(90.0f) * Scale(16, 1, 20));
 		}
 		else if (i == 3) {																//中上牆
 			vT.x = 20.0f; vT.y = 0; vT.z = 0;
 			mxT = Translate(vT);
-			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
+			g_pVerticalWall[i]->setTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
 		}
 		else if (i == 4) {																//右下牆
 			vT.x = 0; vT.y = 0; vT.z = 20.0f;
 			mxT = Translate(vT);
-			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
+			g_pVerticalWall[i]->setTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
 		}
 		else if (i == 5) {																//右上牆
 			vT.x = 20.0f; vT.y = 0; vT.z = 20.0f;
 			mxT = Translate(vT);
-			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
+			g_pVerticalWall[i]->setTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
 		}
 	}
 
@@ -306,163 +306,163 @@ void init(void)
 	for (int i = 0; i < 3; i++) {															// 門
 		g_pDoor[i] = new CQuad;
 #ifdef MULTITEXTURE
-		g_pDoor[i]->SetTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
+		g_pDoor[i]->setTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
 #endif
-		g_pDoor[i]->SetShader();
-		g_pDoor[i]->SetShadingMode(GOURAUD_SHADING);
-		g_pDoor[i]->SetTiling(1, 1);
+		g_pDoor[i]->setShader();
+		g_pDoor[i]->setShadingMode(GOURAUD_SHADING);
+		g_pDoor[i]->setTiling(1, 1);
 		// 設定貼圖
-		g_pDoor[i]->SetMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		g_pDoor[i]->SetKaKdKsShini(1.0f, 1.0f, 1.0f, 1);
+		g_pDoor[i]->setMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		g_pDoor[i]->setKaKdKsShini(1.0f, 1.0f, 1.0f, 1);
 		if (i == 0) {
 			vT.x = 10; vT.y =5.0f; vT.z = 18.f;
 			mxT = Translate(vT);
-			g_pDoor[i]->SetTRSMatrix(mxT * RotateX(270.0f)* RotateZ(90.0f)* Scale(4.5f, 1, 10));
+			g_pDoor[i]->setTRSMatrix(mxT * RotateX(270.0f)* RotateZ(90.0f)* RotateY(180.0f)* Scale(4.5f, 1, 10));
 		}
 		else if (i == 1) {
-			vT.x = 10; vT.y = 2.0f; vT.z = -18.0f;
+			vT.x = 10; vT.y = 5.0f; vT.z = -18.0f;
 			mxT = Translate(vT);
-			g_pDoor[i]->SetTRSMatrix(mxT * RotateX(270.0f)* RotateZ(90.0f)* Scale(4, 1, 16));
+			g_pDoor[i]->setTRSMatrix(mxT * RotateX(270.0f)* RotateZ(90.0f)* RotateY(180.0f)* Scale(4.5f, 1, 10));
 		}
 		else if (i == 2) {
-			vT.x = -8.0f; vT.y = 2.0f; vT.z = 0;
+			vT.x = -8.0f; vT.y = 5.0f; vT.z = 0;
 			mxT = Translate(vT);
-			g_pDoor[i]->SetTRSMatrix(mxT * RotateX(90.0f)* Scale(4, 1, 16));
+			g_pDoor[i]->setTRSMatrix(mxT * RotateX(90.0f)* Scale(4.5f, 1, 10));
 		}
 	}
 
 	// 設定 Cube
 	g_pCube = new CSolidCube;
-	g_pCube->SetTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
-	g_pCube->SetShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
-	g_pCube->SetShader();
+	g_pCube->setTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
+	g_pCube->setShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
+	g_pCube->setShader();
 	vT.x = 0.0f; vT.y = 1.0f; vT.z = 10.0f;
 	mxT = Translate(vT);
 	mxT._m[0][0] = 3.0f; mxT._m[1][1] = 3.0f; mxT._m[2][2] = 3.0f;
-	g_pCube->SetTRSMatrix(mxT);
-	g_pCube->SetShadingMode(GOURAUD_SHADING);
+	g_pCube->setTRSMatrix(mxT);
+	g_pCube->setShadingMode(GOURAUD_SHADING);
 	// materials
-	g_pCube->SetMaterials(vec4(0.35f, 0.35f, 0.35f, 1), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	g_pCube->SetKaKdKsShini(0.25f, 0.8f, 0.2f, 2);
+	g_pCube->setMaterials(vec4(0.35f, 0.35f, 0.35f, 1), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pCube->setKaKdKsShini(0.25f, 0.8f, 0.2f, 2);
 
 	// For Reflecting Sphere
 	g_pSphere = new CSolidSphere(1.0f, 24, 12);
 	vT.x = 20.0f; vT.y = 2.0f; vT.z =10.0f;
 	mxT = Translate(vT);
 	mxT._m[0][0] = 2.0f; mxT._m[1][1] = 2.0f; mxT._m[2][2] = 2.0f;
-	g_pSphere->SetTRSMatrix(mxT* RotateX(90.0f));
+	g_pSphere->setTRSMatrix(mxT* RotateX(90.0f));
 	// 設定貼圖
-	g_pSphere->SetMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	g_pSphere->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
-	g_pSphere->SetColor(vec4(0.9f, 0.9f, 0.9f, 1.0f));
-	g_pSphere->SetCubeMapTexName(1);	// 設定 CubeMap 是使用第 1 張貼圖
-	g_pSphere->SetViewPosition(eye);
-	g_pSphere->SetTextureLayer(DIFFUSE_MAP | CUBIC_MAP); // 沒有使用 Light Map
-	g_pSphere->SetShadingMode(PHONG_SHADING);
-	g_pSphere->SetShader();
+	g_pSphere->setMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pSphere->setKaKdKsShini(0, 0.8f, 0.5f, 1);
+	g_pSphere->setColor(vec4(0.9f, 0.9f, 0.9f, 1.0f));
+	g_pSphere->setCubeMapTexName(1);	// 設定 CubeMap 是使用第 1 張貼圖
+	g_pSphere->setViewPosition(eye);
+	g_pSphere->setTextureLayer(DIFFUSE_MAP | CUBIC_MAP); // 沒有使用 Light Map
+	g_pSphere->setShadingMode(PHONG_SHADING);
+	g_pSphere->setShader();
 
 
 	g_pObj1 = new CObjNew("./Common/Well.obj");
-	g_pObj1->SetTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
-	g_pObj1->SetShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
-	g_pObj1->SetShader();
+	g_pObj1->setTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
+	g_pObj1->setShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
+	g_pObj1->setShader();
 	vT.x = 20.0f; vT.y = 0.5; vT.z = -10.0f;
 	mxT = Translate(vT);
-	g_pObj1->SetTRSMatrix(mxT);
-	g_pObj1->SetShadingMode(GOURAUD_SHADING);
-	g_pObj1->SetMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0.85f, 0.8, 0.9f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	g_pObj1->SetKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
+	g_pObj1->setTRSMatrix(mxT);
+	g_pObj1->setShadingMode(GOURAUD_SHADING);
+	g_pObj1->setMaterials(vec4(0.15f, 0.15f, 0.15f, 1.0f), vec4(0.85f, 0.8, 0.9f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pObj1->setKaKdKsShini(0.15f, 0.8f, 0.2f, 2);
 	//obj2
 	g_pObj2 = new CObjNew("./Common/Well.obj");
-	g_pObj2->SetTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
-	g_pObj2->SetShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
-	g_pObj2->SetShader();
+	g_pObj2->setTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
+	g_pObj2->setShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
+	g_pObj2->setShader();
 	vT.x = 50.5; vT.y = 0.5; vT.z = -2;
 	mxT = Translate(vT);
-	g_pObj2->SetTRSMatrix(mxT * Scale(0.05f, 0.05f, 0.05f));
-	g_pObj2->SetShadingMode(GOURAUD_SHADING);
-	g_pObj2->SetMaterials(vec4(0.55f, 0.55f, 0.55f, 1.0f), vec4(0.85f, 0.5, 0.5f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	g_pObj2->SetKaKdKsShini(0.85f, 0.8f, 0.8f, 2);
+	g_pObj2->setTRSMatrix(mxT * Scale(0.05f, 0.05f, 0.05f));
+	g_pObj2->setShadingMode(GOURAUD_SHADING);
+	g_pObj2->setMaterials(vec4(0.55f, 0.55f, 0.55f, 1.0f), vec4(0.85f, 0.5, 0.5f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pObj2->setKaKdKsShini(0.85f, 0.8f, 0.8f, 2);
 
 	//animal test
 	// For g_pAimal3
 	g_pAimal[2] = new CQuad;
 	//
 #if MULTITEXTURE >= DIFFUSE_MAP | NORMAL_MAP 
-	g_pAimal[2]->SetTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
-	g_pAimal[2]->SetShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
+	g_pAimal[2]->setTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
+	g_pAimal[2]->setShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
 #endif
 
-	g_pAimal[2]->SetShader();
+	g_pAimal[2]->setShader();
 	mxT = Translate(80, 1.0f, -5.0f) * RotateX(45) * Scale(2, 2, 2);
-	g_pAimal[2]->SetTRSMatrix(mxT);
-	g_pAimal[2]->SetShadingMode(GOURAUD_SHADING);
+	g_pAimal[2]->setTRSMatrix(mxT);
+	g_pAimal[2]->setShadingMode(GOURAUD_SHADING);
 	// 設定貼圖
-	g_pAimal[2]->SetMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	g_pAimal[2]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
+	g_pAimal[2]->setMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pAimal[2]->setKaKdKsShini(0, 0.8f, 0.5f, 1);
 
 	// For g_pAimal2
 	g_pAimal[1] = new CQuad;
 
 #if MULTITEXTURE >= DIFFUSE_MAP | NORMAL_MAP
-	g_pAimal[1]->SetTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
-	g_pAimal[1]->SetShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
+	g_pAimal[1]->setTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
+	g_pAimal[1]->setShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
 #endif 
 
-	g_pAimal[1]->SetShader();
+	g_pAimal[1]->setShader();
 	mxT = Translate(100, 1.0f, -5.0f) * RotateX(90) * Scale(2, 2, 2);
-	g_pAimal[1]->SetTRSMatrix(mxT);
-	g_pAimal[1]->SetShadingMode(GOURAUD_SHADING);
+	g_pAimal[1]->setTRSMatrix(mxT);
+	g_pAimal[1]->setShadingMode(GOURAUD_SHADING);
 	// 設定貼圖
-	g_pAimal[1]->SetMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	g_pAimal[1]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
+	g_pAimal[1]->setMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pAimal[1]->setKaKdKsShini(0, 0.8f, 0.5f, 1);
 
 	// For g_pAimal1
 	g_pAimal[0] = new CQuad;
 
 #if MULTITEXTURE >= (DIFFUSE_MAP | NORMAL_MAP)
-	g_pAimal[0]->SetTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
-	g_pAimal[0]->SetShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
+	g_pAimal[0]->setTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
+	g_pAimal[0]->setShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
 #endif
 
-	g_pAimal[0]->SetShader();
+	g_pAimal[0]->setShader();
 	mxT = Translate(125, 1.0f, -3.0f) * RotateX(90) * Scale(2, 2, 2);
-	g_pAimal[0]->SetTRSMatrix(mxT);
-	g_pAimal[0]->SetShadingMode(GOURAUD_SHADING);
+	g_pAimal[0]->setTRSMatrix(mxT);
+	g_pAimal[0]->setShadingMode(GOURAUD_SHADING);
 	// 設定貼圖
-	g_pAimal[0]->SetMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	g_pAimal[0]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
+	g_pAimal[0]->setMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	g_pAimal[0]->setKaKdKsShini(0, 0.8f, 0.5f, 1);
 
 
 	// 設定 代表 Light 的 WireSphere
 	for (int i = 0; i < 4; i++) {
 		g_pLight[i] = new CWireSphere(0.25f, 6, 3);
-		g_pLight[i]->SetLightingDisable();
-		g_pLight[i]->SetTextureLayer(NONE_MAP);	// 沒有貼圖
-		g_pLight[i]->SetShader();
-		g_pLight[0]->SetColor(g_Light1.diffuse);
+		g_pLight[i]->setLightingDisable();
+		g_pLight[i]->setTextureLayer(NONE_MAP);	// 沒有貼圖
+		g_pLight[i]->setShader();
+		g_pLight[0]->setColor(g_Light1.diffuse);
 		if (i == 0) {
 			vT.x = 0; vT.y = 6.0f; vT.z = 10.0f;
 			mxT = Translate(vT);
-			g_pLight[i]->SetTRSMatrix(mxT);
+			g_pLight[i]->setTRSMatrix(mxT);
 		}
 		else if (i == 1) {
 			vT.x = 20.0f; vT.y = 6.0f; vT.z = 10.0f;
 			mxT = Translate(vT);
-			g_pLight[i]->SetTRSMatrix(mxT);
-			g_pLight[i]->SetColor(g_Light2.diffuse);
+			g_pLight[i]->setTRSMatrix(mxT);
+			g_pLight[i]->setColor(g_Light2.diffuse);
 		}
 		else if (i == 2) {
 			vT.x = 20.0f; vT.y = 6.0f; vT.z = -10.0f;
 			mxT = Translate(vT);
-			g_pLight[i]->SetTRSMatrix(mxT);
-			g_pLight[i]->SetColor(g_Light3.diffuse);
+			g_pLight[i]->setTRSMatrix(mxT);
+			g_pLight[i]->setColor(g_Light3.diffuse);
 		}
 		else if (i == 3) {
 			vT.x = 0; vT.y = 6.0f; vT.z = -10.0f;
 			mxT = Translate(vT);
-			g_pLight[i]->SetTRSMatrix(mxT);
-			g_pLight[i]->SetColor(g_Light4.diffuse);
+			g_pLight[i]->setTRSMatrix(mxT);
+			g_pLight[i]->setColor(g_Light4.diffuse);
 		}
 	}
 
@@ -472,27 +472,27 @@ void init(void)
 	bool bPDirty;
 	mat4 mpx = camera->getProjectionMatrix(bPDirty);
 	for (int i = 0; i < 4; i++) {
-		g_pFloor[i]->SetProjectionMatrix(mpx);
+		g_pFloor[i]->setProjectionMatrix(mpx);
 	}
 	for (int i = 0; i < 3; i++) {
-		g_pDoor[i]->SetProjectionMatrix(mpx);
+		g_pDoor[i]->setProjectionMatrix(mpx);
 	}
 	for (int i = 0; i < 6; i++) {
-		g_pHorizontalWall[i]->SetProjectionMatrix(mpx);
-		g_pVerticalWall[i]->SetProjectionMatrix(mpx);
+		g_pHorizontalWall[i]->setProjectionMatrix(mpx);
+		g_pVerticalWall[i]->setProjectionMatrix(mpx);
 	}
-	g_pCube->SetProjectionMatrix(mpx);
-	g_pSphere->SetProjectionMatrix(mpx);
+	g_pCube->setProjectionMatrix(mpx);
+	g_pSphere->setProjectionMatrix(mpx);
 	//obj1
-	g_pObj1->SetProjectionMatrix(mpx);
-	g_pObj2->SetProjectionMatrix(mpx);
+	g_pObj1->setProjectionMatrix(mpx);
+	g_pObj2->setProjectionMatrix(mpx);
 	//animals
-	g_pAimal[0]->SetProjectionMatrix(mpx);
-	g_pAimal[1]->SetProjectionMatrix(mpx);
-	g_pAimal[2]->SetProjectionMatrix(mpx);
+	g_pAimal[0]->setProjectionMatrix(mpx);
+	g_pAimal[1]->setProjectionMatrix(mpx);
+	g_pAimal[2]->setProjectionMatrix(mpx);
 
 	for (int i = 0; i < 4; i++) {
-		g_pLight[i]->SetProjectionMatrix(mpx);
+		g_pLight[i]->setProjectionMatrix(mpx);
 	}
 }
 
@@ -508,18 +508,18 @@ void GL_Display(void)
 
 #ifndef  MULTITEXTURE
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[0]);
-	g_pFloor->Draw();
+	g_pFloor->draw();
 #else 
 	glActiveTexture(GL_TEXTURE0); // select active texture 0
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[0]); // 與 Diffuse Map 結合
 	glActiveTexture(GL_TEXTURE1); // select active texture 1
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[2]); // 與 Light Map 結合
 	for (int i = 0; i < 4; i++) {
-		g_pFloor[i]->Draw();
+		g_pFloor[i]->draw();
 	}
 	for (int i = 0; i < 6; i++) {
-		g_pHorizontalWall[i]->Draw();
-		g_pVerticalWall[i]->Draw();
+		g_pHorizontalWall[i]->draw();
+		g_pVerticalWall[i]->draw();
 	}
 	glActiveTexture(GL_TEXTURE0);
 	//  glBindTexture(GL_TEXTURE_2D, 0);
@@ -529,24 +529,24 @@ void GL_Display(void)
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[3]);
 	for (int i = 0; i < 3; i++) {
-		g_pDoor[i]->Draw();
+		g_pDoor[i]->draw();
 	}
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[1]);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[4]);
-	g_pCube->Draw();
+	g_pCube->draw();
 
 	glActiveTexture(GL_TEXTURE0); // select active texture 0
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[3]); // 與 Diffuse Map 結合
 	glActiveTexture(GL_TEXTURE1); // select active texture 1
 	glBindTexture(GL_TEXTURE_CUBE_MAP, g_uiSphereCubeMap); // 與 Light Map 結合
-	g_pSphere->Draw();
+	g_pSphere->draw();
 
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 	for (int i = 0; i < 4; i++) {
-		g_pLight[i]->Draw();
+		g_pLight[i]->draw();
 	}
 
 
@@ -556,7 +556,7 @@ void GL_Display(void)
 	glBindTexture(GL_TEXTURE_2D, g_uiAimalTexID[0]);
 	glActiveTexture(GL_TEXTURE2); // select active texture 0
 	glBindTexture(GL_TEXTURE_2D, g_uiAimalNormalTexID[0]);
-	g_pAimal[0]->Draw();
+	g_pAimal[0]->draw();
 
 	glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -564,13 +564,13 @@ void GL_Display(void)
 	glBindTexture(GL_TEXTURE_2D, g_uiAimalTexID[1]);
 	glActiveTexture(GL_TEXTURE2); // select active texture 0
 	glBindTexture(GL_TEXTURE_2D, g_uiAimalNormalTexID[1]);
-	g_pAimal[1]->Draw();
+	g_pAimal[1]->draw();
 
 	glActiveTexture(GL_TEXTURE0); // select active texture 0
 	glBindTexture(GL_TEXTURE_2D, g_uiAimalTexID[2]);
 	glActiveTexture(GL_TEXTURE2); // select active texture 0
 	glBindTexture(GL_TEXTURE_2D, g_uiAimalNormalTexID[2]);
-	g_pAimal[2]->Draw();
+	g_pAimal[2]->draw();
 
 	glDisable(GL_BLEND);	// 關閉 Blending
 	glDepthMask(GL_TRUE);	// 開啟對 Z-Buffer 的寫入操作
@@ -580,13 +580,13 @@ void GL_Display(void)
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[5]); // 與 Diffuse Map 結合
 	glActiveTexture(GL_TEXTURE2); // select active texture 0
 	glBindTexture(GL_TEXTURE_2D, g_uiCheeseNormalTexID); // 與 Diffuse Map 結合
-	g_pObj1->Draw();
+	g_pObj1->draw();
 
 	glActiveTexture(GL_TEXTURE0); // select active texture 0
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[6]); // 與 Diffuse Map 結合
 	glActiveTexture(GL_TEXTURE2); // select active texture 0
 	glBindTexture(GL_TEXTURE_2D, g_uiDianosourNormalTexID); // 與 Diffuse Map 結合
-	g_pObj2->Draw();
+	g_pObj2->draw();
 	glutSwapBuffers();	// 交換 Frame Buffer
 }
 
@@ -608,7 +608,7 @@ void UpdateLightPosition(float dt)
 
 
 	mxT = Translate(g_Light1.position);
-	g_pLight[0]->SetTRSMatrix(mxT);
+	g_pLight[0]->setTRSMatrix(mxT);
 
 }
 //----------------------------------------------------------------------------
@@ -626,30 +626,30 @@ void onFrameMove(float delta)
 	mvx = camera->getViewMatrix(bVDirty);
 	if (bVDirty) {
 		for (int i = 0; i < 4; i++) {
-			g_pFloor[i]->SetViewMatrix(mvx);
+			g_pFloor[i]->setViewMatrix(mvx);
 		}
 		for (int i = 0; i < 6; i++) {
-			g_pHorizontalWall[i]->SetViewMatrix(mvx);
-			g_pVerticalWall[i]->SetViewMatrix(mvx);
+			g_pHorizontalWall[i]->setViewMatrix(mvx);
+			g_pVerticalWall[i]->setViewMatrix(mvx);
 		}
 		for (int i = 0; i < 3; i++) {
-			g_pDoor[i]->SetViewMatrix(mvx);
+			g_pDoor[i]->setViewMatrix(mvx);
 		}
-		g_pCube->SetViewMatrix(mvx);
-		g_pSphere->SetViewMatrix(mvx);
-		g_pSphere->SetViewPosition(camera->getViewPosition());
+		g_pCube->setViewMatrix(mvx);
+		g_pSphere->setViewMatrix(mvx);
+		g_pSphere->setViewPosition(camera->getViewPosition());
 		//obj1
-		g_pObj1->SetViewMatrix(mvx);
-		g_pObj2->SetViewMatrix(mvx);
-		//g_pObj2->SetTRSMatrix(RotateY(eye-at));
+		g_pObj1->setViewMatrix(mvx);
+		g_pObj2->setViewMatrix(mvx);
+		//g_pObj2->setTRSMatrix(RotateY(eye-at));
 
 		//animals
-		g_pAimal[0]->SetViewMatrix(mvx);
-		g_pAimal[1]->SetViewMatrix(mvx);
-		g_pAimal[2]->SetViewMatrix(mvx);
+		g_pAimal[0]->setViewMatrix(mvx);
+		g_pAimal[1]->setViewMatrix(mvx);
+		g_pAimal[2]->setViewMatrix(mvx);
 
 		for (int i = 0; i < 4; i++) {
-			g_pLight[i]->SetViewMatrix(mvx);
+			g_pLight[i]->setViewMatrix(mvx);
 		}
 
 		if (g_pLight2On) {
@@ -689,33 +689,34 @@ void onFrameMove(float delta)
 	if (eye.x > 5.0f && eye.z > 15.0f) {			// LR1
 		g_bInR1 = true;
 		if (g_fRot0 > -90.f) g_fRot0 -= delta * 120.0f;
-		g_pDoor[0]->SetTRSMatrix(Translate(10.0f, 5.0f, 18.0f) * 
+		g_pDoor[0]->setTRSMatrix(Translate(10.0f, 5.0f, 18.0f) * 
 			RotateX(270.0f) * 
 			RotateZ(90.0f) *
-			RotateZ(-g_fRot0)* 
+			RotateY(180.0f)* 
+			RotateZ(g_fRot0-180.0f)* 
 			Scale(4.5, 1,  10) *
-			Translate(0.5f, 1.5f, 0) );
+			Translate(0.5f, -1.5f, 0) );
 	}
-	if (eye.x < -17.f && eye.z > 12.f) {			// LR2
-		g_bInR3 = true;
-		if (g_fRot1 < 90.f) g_fRot1 += delta * 150.0f;
-		g_pDoor[1]->SetTRSMatrix(Translate(-FLOOR_SCALE / 2.0f, 0.5f, FLOOR_SCALE / 4.0f + FLOOR_SCALE / 6.0f - 0.3f) *
-			RotateY(-90.f) *
-			RotateY(-g_fRot1) *
-			Translate(-FLOOR_SCALE / 12.0f, 0.0f, -FLOOR_SCALE / 12.0f + 0.7f) *
-			Scale(0.8f, 0.8f, 0.8f));
-	}
-	else g_bInR3 = false;
-	if (eye.x > 17.f && eye.z < -12.f) {			// RR1
+	if (eye.x > 5.f && eye.z < -15.f) {			// LR2
 		g_bInR2 = true;
-		if (g_fRot2 < 90.f) g_fRot2 += delta * 150.0f;
-		g_pDoor[2]->SetTRSMatrix(Translate(FLOOR_SCALE / 2.0f, 0.5f, -FLOOR_SCALE / 4.0f - FLOOR_SCALE / 6.0f + 0.3f) *
-			RotateY(90.f) *
-			RotateY(-g_fRot2) *
-			Translate(-FLOOR_SCALE / 12.0f, 0.0f, -FLOOR_SCALE / 12.0f + 0.7f) *
-			Scale(0.8f, 0.8f, 0.8f));
+		if (g_fRot1 < 90.f) g_fRot1 += delta * 120.0f;
+		g_pDoor[1]->setTRSMatrix(Translate(10.0f, 5.0f, -18.0f) *
+			RotateX(270.0f) *
+			RotateZ(90.0f) *
+			RotateY(180.0f) *
+			RotateZ(g_fRot0 - 180.0f) *
+			Scale(4.5, 1, 10) *
+			Translate(0.5f, 1.5f, 0));
 	}
-	else g_bInR2 = false;
+	if (eye.x < -5.f && eye.z < 3.f) {			// RR1
+		g_bInR3 = true;
+		if (g_fRot2 < 90.f) g_fRot2 += delta * 120.0f;
+		g_pDoor[2]->setTRSMatrix(Translate(-8.0f, 5.0f, 0.0f) *
+			RotateX(90.0f) *
+			RotateZ(g_fRot0 - 180.0f) *
+			Scale(4.5, 1, 10) *
+			Translate(0.5f, 1.5f, 0));
+	}
 
 	// 如果需要重新計算時，在這邊計算每一個物件的顏色
 	g_pFloor[0]->Update(delta, g_Light1);
@@ -774,32 +775,32 @@ void Win_Keyboard(unsigned char key, int x, int y)
 	case 82: // R key
 		if (g_fLightR <= 0.95f) g_fLightR += 0.05f;
 		g_Light1.diffuse.x = g_fLightR;
-		g_pLight[0]->SetColor(g_Light1.diffuse);
+		g_pLight[0]->setColor(g_Light1.diffuse);
 		break;
 	case 114: // r key
 		if (g_fLightR >= 0.05f) g_fLightR -= 0.05f;
 		g_Light1.diffuse.x = g_fLightR;
-		g_pLight[0]->SetColor(g_Light1.diffuse);
+		g_pLight[0]->setColor(g_Light1.diffuse);
 		break;
 	case 71: // G key
 		if (g_fLightG <= 0.95f) g_fLightG += 0.05f;
 		g_Light1.diffuse.y = g_fLightG;
-		g_pLight[0]->SetColor(g_Light1.diffuse);
+		g_pLight[0]->setColor(g_Light1.diffuse);
 		break;
 	case 103: // g key
 		if (g_fLightG >= 0.05f) g_fLightG -= 0.05f;
 		g_Light1.diffuse.y = g_fLightG;
-		g_pLight[0]->SetColor(g_Light1.diffuse);
+		g_pLight[0]->setColor(g_Light1.diffuse);
 		break;
 	case 66: // B key
 		if (g_fLightB <= 0.95f) g_fLightB += 0.05f;
 		g_Light1.diffuse.z = g_fLightB;
-		g_pLight[0]->SetColor(g_Light1.diffuse);
+		g_pLight[0]->setColor(g_Light1.diffuse);
 		break;
 	case 98: // b key
 		if (g_fLightB >= 0.05f) g_fLightB -= 0.05f;
 		g_Light1.diffuse.z = g_fLightB;
-		g_pLight[0]->SetColor(g_Light1.diffuse);
+		g_pLight[0]->setColor(g_Light1.diffuse);
 		break;
 		//----------------------------------------------------------------------------
 	case 033:
@@ -991,7 +992,7 @@ void Win_PassiveMotion(int x, int y) {
 	vBill = normalize(vBill);
 
 	mat4 mxT = Translate(50.5f, 0.5f, -2.0f) * RotateY((float)atan2(vBill.x, vBill.z) / DegreesToRadians) * Scale(0.05f, 0.05f, 0.05f);
-	g_pObj2->SetTRSMatrix(mxT);
+	g_pObj2->setTRSMatrix(mxT);
 }
 
 // The motion callback for a window is called when the mouse moves within the window while one or more mouse buttons are pressed.

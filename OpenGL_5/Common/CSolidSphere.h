@@ -23,8 +23,8 @@ public:
 	// 只有以 vertex 為基礎的計算顏色的 Ground Shading
 	void RenderWithFlatShading(const LightSource &lights);
 	void RenderWithGouraudShading(const LightSource &lights);
-	void Draw();
-	void DrawW(); // 呼叫不再次設定 Shader 的描繪方式
+	void draw();
+	void drawW(); // 呼叫不再次設定 Shader 的描繪方式
 
 };
 

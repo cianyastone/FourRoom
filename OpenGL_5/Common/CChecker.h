@@ -22,19 +22,19 @@ public:
 	CChecker(int iSize = 6, float fYPos = 0.0f); // 預設為 6 X 6 方格, 每一個方格邊長都是 1
 	~CChecker();
 
-	void SetShader();
-	void SetShaderName(const char vxShader[], const char fsShader[]);
-	void SetProjectionMatrix(mat4 &mat);
-	void SetViewMatrix(mat4 &mat);
-	void SetTRSMatrix(mat4 &mat);
-	void SetShadingMode(int iMode) {m_iMode = iMode;}
-	void SetTextureLayer(int texlayer);
+	void setShader();
+	void setShaderName(const char vxShader[], const char fsShader[]);
+	void setProjectionMatrix(mat4 &mat);
+	void setViewMatrix(mat4 &mat);
+	void setTRSMatrix(mat4 &mat);
+	void setShadingMode(int iMode) {m_iMode = iMode;}
+	void setTextureLayer(int texlayer);
 	void Update(float dt, const LightSource &lights);
-	void Draw();
+	void draw();
 
 	// For setting materials 
-	void SetMaterials(color4 ambient, color4 diffuse, color4 specular);
-	void SetKaKdKsShini(float ka, float kd, float ks, float shininess); // ka kd ks shininess
+	void setMaterials(color4 ambient, color4 diffuse, color4 specular);
+	void setKaKdKsShini(float ka, float kd, float ks, float shininess); // ka kd ks shininess
 };
 
 #endif

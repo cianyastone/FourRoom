@@ -40,17 +40,17 @@ CWireCube::CWireCube()
 	for( int i = 0 ; i < m_iNumVtx ; i++ ) m_pColors[i] = vec4(-1.0f,-1.0f,-1.0f,1.0f);
 
 #ifdef PERVERTEX_LIGHTING
-	SetShaderName("vsPerVtxLighting.glsl", "fsPerVtxLighting.glsl");
+	setShaderName("vsPerVtxLighting.glsl", "fsPerVtxLighting.glsl");
 #else
-	SetShaderName("vsPerPixelLighting.glsl", "fsPerPixelLighting.glsl");
+	setShaderName("vsPerPixelLighting.glsl", "fsPerPixelLighting.glsl");
 #endif  
 
-	// Create and initialize a buffer object ，將此部分的設定移入 SetShader 中
+	// Create and initialize a buffer object ，將此部分的設定移入 setShader 中
 	// CreateBufferObject();
 
 	// 設定材質
-	SetMaterials(vec4(0), vec4(0.5f, 0.5f, 0.5f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	SetKaKdKsShini(0, 0.8f, 0.2f, 1);
+	setMaterials(vec4(0), vec4(0.5f, 0.5f, 0.5f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	setKaKdKsShini(0, 0.8f, 0.2f, 1);
 }
 
 void CWireCube::Quad( int a, int b, int c, int d )
@@ -144,9 +144,9 @@ void CWireCube::Update(float dt)
 }
 
 
-void CWireCube::Draw()
+void CWireCube::draw()
 {
-	DrawingSetShader();
+	drawingsetShader();
 	glDrawArrays( GL_LINE_LOOP,  0, 4 );
 	glDrawArrays( GL_LINE_LOOP,  4, 4 );
 	glDrawArrays( GL_LINE_LOOP,  8, 4 );
@@ -156,9 +156,9 @@ void CWireCube::Draw()
 }
 
 
-void CWireCube::DrawW()
+void CWireCube::drawW()
 {
-	DrawingWithoutSetShader();
+	drawingWithoutsetShader();
 	glDrawArrays( GL_LINE_LOOP,  0, 4 );
 	glDrawArrays( GL_LINE_LOOP,  4, 4 );
 	glDrawArrays( GL_LINE_LOOP,  8, 4 );

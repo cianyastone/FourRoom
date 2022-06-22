@@ -71,17 +71,17 @@ CSolidCube::CSolidCube()
 #endif
 
 #ifdef PERVERTEX_LIGHTING
-	SetShaderName("vsPerVtxLighting.glsl", "fsPerVtxLighting.glsl");
+	setShaderName("vsPerVtxLighting.glsl", "fsPerVtxLighting.glsl");
 #else
-	SetShaderName("vsPerPixelLighting.glsl", "fsPerPixelLighting.glsl");
+	setShaderName("vsPerPixelLighting.glsl", "fsPerPixelLighting.glsl");
 #endif
 
-	// Create and initialize a buffer object ，將此部分的設定移入 SetShader 中
+	// Create and initialize a buffer object ，將此部分的設定移入 setShader 中
 //	CreateBufferObject();
 
 	// 設定材質
-	SetMaterials(vec4(0), vec4(0.5f, 0.5f, 0.5f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-	SetKaKdKsShini(0, 0.8f, 0.2f, 1);
+	setMaterials(vec4(0), vec4(0.5f, 0.5f, 0.5f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+	setKaKdKsShini(0, 0.8f, 0.2f, 1);
 }
 
 void CSolidCube::Quad( int a, int b, int c, int d )
@@ -101,18 +101,18 @@ void CSolidCube::Quad( int a, int b, int c, int d )
 
 }
 
-void CSolidCube::Draw()
+void CSolidCube::draw()
 {
 //	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);  // Change to wireframe mode
-	DrawingSetShader();
+	drawingsetShader();
 	glDrawArrays( GL_TRIANGLES, 0, SOLIDCUBE_NUM );
 //	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL); // Return to solid mode
 }
 
 
-void CSolidCube::DrawW()
+void CSolidCube::drawW()
 {
-	DrawingWithoutSetShader();
+	drawingWithoutsetShader();
 	glDrawArrays( GL_TRIANGLES, 0, SOLIDCUBE_NUM );
 }
 

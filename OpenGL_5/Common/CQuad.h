@@ -23,11 +23,11 @@ public:
 	GLuint GetShaderHandle() { return m_uiProgram;} 
 	void RenderWithFlatShading(const LightSource &lights);//  vLightI: Light Intensity
 	void RenderWithGouraudShading(const LightSource &lights);//  vLightI: Light Intensity
-	void SetVtxColors(vec4 vLFColor, vec4 vLRColor, vec4 vTRColor, vec4 vTLColor); // four Vertices' Color
-	void SetVtxColors(vec4 vFColor, vec4 vSColor);	// three Vertices' Color with idx as the first 
+	void setVtxColors(vec4 vLFColor, vec4 vLRColor, vec4 vTRColor, vec4 vTLColor); // four Vertices' Color
+	void setVtxColors(vec4 vFColor, vec4 vSColor);	// three Vertices' Color with idx as the first 
 
-	void Draw();
-	void DrawW();
+	void draw();
+	void drawW();
 };
 
 

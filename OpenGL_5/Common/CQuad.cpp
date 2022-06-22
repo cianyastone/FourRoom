@@ -91,9 +91,9 @@ CQuad::CQuad()
 	for( int i = 0 ; i < m_iNumVtx ; i++ ) m_pColors[i] = vec4(-1.0f,-1.0f,-1.0f,1.0f);
 
 #ifdef PERVERTEX_LIGHTING
-	SetShaderName("vsPerVtxLighting.glsl", "fsPerVtxLighting.glsl");
+	setShaderName("vsPerVtxLighting.glsl", "fsPerVtxLighting.glsl");
 #else
-	SetShaderName("vsPerPixelLighting.glsl", "fsPerPixelLighting.glsl");
+	setShaderName("vsPerPixelLighting.glsl", "fsPerPixelLighting.glsl");
 #endif
 
 }
@@ -192,7 +192,7 @@ void CQuad::Update(float dt)
 	}
 }
 
-void CQuad::SetVtxColors(vec4 vLFColor, vec4 vLRColor, vec4 vTRColor, vec4 vTLColor)
+void CQuad::setVtxColors(vec4 vLFColor, vec4 vLRColor, vec4 vTRColor, vec4 vTLColor)
 {
 	m_pColors[3] = m_pColors[0] = vLFColor;
 	m_pColors[1] = vLRColor;
@@ -204,7 +204,7 @@ void CQuad::SetVtxColors(vec4 vLFColor, vec4 vLRColor, vec4 vTRColor, vec4 vTLCo
 	glBufferSubData( GL_ARRAY_BUFFER, sizeof(vec4)*m_iNumVtx+sizeof(vec3)*m_iNumVtx, sizeof(vec4)*m_iNumVtx, m_pColors ); // vertcies' Color
 }
 
-void CQuad::SetVtxColors(vec4 vFColor, vec4 vSColor) // 設定兩個三角形的顏色
+void CQuad::setVtxColors(vec4 vFColor, vec4 vSColor) // 設定兩個三角形的顏色
 {
 	m_pColors[0] = m_pColors[1] = m_pColors[2] = vFColor;
 	m_pColors[3] = m_pColors[4] = m_pColors[5] = vSColor;
@@ -214,17 +214,17 @@ void CQuad::SetVtxColors(vec4 vFColor, vec4 vSColor) // 設定兩個三角形的顏色
 	glBufferSubData( GL_ARRAY_BUFFER, sizeof(vec4)*m_iNumVtx+sizeof(vec3)*m_iNumVtx, sizeof(vec4)*m_iNumVtx, m_pColors ); // vertcies' Color
 }
 
-void CQuad::Draw()
+void CQuad::draw()
 {
-	DrawingSetShader();
+	drawingsetShader();
 //	glBindTexture(GL_TEXTURE_2D, m_uiTexObject[0]); 
 	glDrawArrays( GL_TRIANGLES, 0, QUAD_NUM );
 //	glBindTexture(GL_TEXTURE_2D, 0);  // 釋放現有的貼圖設定
 }
 
-void CQuad::DrawW()
+void CQuad::drawW()
 {
-	DrawingWithoutSetShader();
+	drawingWithoutsetShader();
 //	glBindTexture(GL_TEXTURE_2D, m_uiTexObject[0]); 
 	glDrawArrays( GL_TRIANGLES, 0, QUAD_NUM );
 //	glBindTexture(GL_TEXTURE_2D, 0);  // 釋放現有的貼圖設定

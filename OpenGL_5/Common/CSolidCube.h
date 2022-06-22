@@ -24,8 +24,8 @@ public:
 
 	void RenderWithFlatShading(const LightSource &lights);
 	void RenderWithGouraudShading(const LightSource &lights);
-	void Draw();
-	void DrawW();
+	void draw();
+	void drawW();
 };
 
 #endif
