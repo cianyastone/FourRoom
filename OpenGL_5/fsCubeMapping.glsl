@@ -1,4 +1,3 @@
-// #define CHANGE_COLOR
 #version 130
 #define NONE_MAP    0
 #define DIFFUSE_MAP 1
@@ -16,7 +15,7 @@ in vec3 ReflView;   // View 在該 Vertex 相對應於 Normal 的反射向量
 uniform int iTexLayer;
 
 // 以下為新增的部分
-uniform vec4  LightInView;        // Light's position in View Space
+uniform vec4  LightInView;     // Light's position in View Space
 uniform vec4  AmbientProduct;  // light's ambient  與 Object's ambient  與 ka 的乘積
 uniform vec4  DiffuseProduct;  // light's diffuse  與 Object's diffuse  與 kd 的乘積
 uniform vec4  SpecularProduct; // light's specular 與 Object's specular 與 ks 的乘積
@@ -27,7 +26,7 @@ uniform vec4  vObjectColor;    // 代表物件的單一顏色
 // For Texture Sampler
 uniform sampler2D   diffuMap; // 貼圖的參數設定
 uniform sampler2D   lightMap; // 貼圖的參數設定
-uniform samplerCube cubeMap; // 貼圖的參數設定
+uniform samplerCube cubeMap;  // 貼圖的參數設定
 
 void main()
 {
@@ -37,14 +36,8 @@ void main()
 	vec4 LightingColor = vec4(0.0,0.0,0.0,1.0);
 	
 	if( iLighting != 1 ) {
-#ifndef CHANGE_COLOR
-		// 直接使用傳入的 LightMap
+		// 直接使用傳入的顏色
 		gl_FragColor = vObjectColor * (0.325 *texture2D(diffuMap, DiffuseMapUV) + 0.675 * textureCube(cubeMap, ReflView));
-#else
-		vec4 lightMap = texture2D(lightMap, LightMapUV);	
-		lightMap = lightMap * vec4(0.79,0.95, 0.96, 1.0);
-		gl_FragColor = vObjectColor * texture2D(diffuMap, DiffuseMapUV) * lightMap;
-#endif
 		gl_FragColor.w = 1.0f;
 	}
 	else {	

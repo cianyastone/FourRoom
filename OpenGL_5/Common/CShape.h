@@ -11,6 +11,7 @@ typedef Angel::vec4  point4;
 
 #define FLAT_SHADING    0
 #define GOURAUD_SHADING 1
+#define PHONG_SHADING 4		 // GPU Per PIXEL Lighting / vsPerPixelLighting
 
 // GPU 的計算必須傳更多的參數進入 Shader
 

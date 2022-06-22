@@ -6,6 +6,7 @@
 #define DIFFUSE_MAP 0x1
 #define LIGHT_MAP   0x2
 #define NORMAL_MAP  0x4
+#define CUBIC_MAP = 0x8
 
 // 
 // bit 2 : Normal Map

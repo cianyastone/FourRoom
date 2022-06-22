@@ -209,6 +209,12 @@ void CShape::DrawingSetShader()
 	glUniform1i(m_uiLighting, m_iLighting);
 	glUniform1i(m_uiTexLayer, m_iTexLayer);
 
+
+	glUniform4fv(m_uiLightInView2, 1, m_vLightInView2);		//第二個光源
+	glUniform4fv(m_uiAmbient2, 1, m_AmbientProduct2);
+	glUniform4fv(m_uiDiffuse2, 1, m_DiffuseProduct2);
+	glUniform4fv(m_uiSpecular2, 1, m_SpecularProduct2);
+
 #ifdef CUBIC_MAP
 	glUniform4fv(m_uiViewPos, 1, m_v4Eye);
 	glUniformMatrix4fv(m_uiTRS, 1, GL_TRUE, m_mxTRS);
@@ -234,6 +240,11 @@ void CShape::DrawingWithoutSetShader()
 	glUniform1f(m_uiShininess, m_Material.shininess); 
 	glUniform1i(m_uiLighting, m_iLighting); 
 	glUniform1i(m_uiTexLayer, m_iTexLayer);
+
+	glUniform4fv(m_uiLightInView2, 1, m_vLightInView2);	//第二個光源
+	glUniform4fv(m_uiAmbient2, 1, m_AmbientProduct2);
+	glUniform4fv(m_uiDiffuse2, 1, m_DiffuseProduct2);
+	glUniform4fv(m_uiSpecular2, 1, m_SpecularProduct2);
 
 #ifdef CUBIC_MAP
 	glUniform4fv(m_uiViewPos, 1, m_v4Eye);

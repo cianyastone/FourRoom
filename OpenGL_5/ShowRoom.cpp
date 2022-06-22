@@ -24,8 +24,7 @@
 #define VP_HALFHEIGHT 20.0f
 #define GRID_SIZE 20 // must be an even number
 #define WALKING_SPACE (20.0f-3.0f)//行走範圍
-#define WALKING_SPACEX (30.0f-3.0f)//行走範圍
-
+#define FLOOR_SCALE 20.0f
 
 // For Model View and Projection Matrix
 mat4 g_mxModelView(1.0f);
@@ -35,10 +34,10 @@ mat4 g_mxProjection;
 CQuad* g_pFloor[4];
 CSolidCube* g_pCube;
 CSolidSphere* g_pSphere;
+CQuad* g_pDoor[3];
 // wall
 CQuad* g_pHorizontalWall[6];
 CQuad* g_pVerticalWall[6];
-CQuad* g_pFrontWall[7];
 // For View Point
 GLfloat g_fRadius = 8.0;
 GLfloat g_fTheta = 45.0f * DegreesToRadians;
@@ -52,6 +51,14 @@ GLuint g_uiAimalNormalTexID[3];
 CObjNew* g_pObj1, * g_pObj2;
 GLuint g_uiCheeseNormalTexID;
 GLuint g_uiDianosourNormalTexID;
+
+// for doors
+mat4	g_mxBigDoorPos;
+float	g_fRot0 = 0.f, g_fRot1 = 0.f, g_fRot2 = 0.f, g_fRot3 = 0.f;			//旋轉角
+bool	g_bInR1 = false, g_bInR3 = false, g_bInR2 = false;		//是否在房間內
+
+//Lights
+bool g_pLight2On, g_pLight3On, g_pLight4On = true;
 //----------------------------------------------------------------------------
 // Part 2 : for single light source
 bool g_bAutoRotating = false;
@@ -67,7 +74,7 @@ LightSource g_Light1 = {
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // ambient 
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // diffuse
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
-	point4(0.0f, 4.0f, 10.0f, 1.0f),   // position
+	point4(-10.0f, 4.0f, 10.0f, 1.0f),   // position
 	point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
 	vec3(0.0f, 0.0f, 0.0f),			  // spotTarget
 	vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
@@ -85,7 +92,7 @@ LightSource g_Light2 = {
 	color4(g_fLightR, g_fLightG, g_fLightB, 1.0f), // specular
 	point4(20.0f, 20.0f, 10.0f, 1.0f),   // position
 	point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
-	vec3(0.0f, 0.0f, 0.0f),			  // spotTarget
+	vec3(20.0f, 0.0f, 10.0f),			  // spotTarget
 	vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
 	2.0f,	// spotExponent(parameter e); cos^(e)(phi) 
 	45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
@@ -103,7 +110,7 @@ LightSource g_Light3 = {
 	point4(0.0f, 0.0f, 0.0f, 1.0f),   // halfVector
 	vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
 	2.0f,	// spotExponent(parameter e); cos^(e)(phi) 
-	60.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
+	45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
 	0.707f,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
 	1,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
 	0,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
@@ -123,7 +130,7 @@ LightSource g_Light4 = {
 	0,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
 	0		// quadraticAttenuation (a + bd + cd^2)^-1 中的 c
 };
-CWireSphere* g_pLight[4];
+CWireSphere *g_pLight[4];
 //----------------------------------------------------------------------------
 
 // Texture 
@@ -150,17 +157,17 @@ void init(void)
 	camera->updatePerspective(60.0, (GLfloat)SCREEN_SIZE / (GLfloat)SCREEN_SIZE, 1.0, 1000.0);
 
 	auto texturepool = CTexturePool::create();
-	g_uiFTexID[0] = texturepool->AddTexture("texture/checker.png");
+	g_uiFTexID[0] = texturepool->AddTexture("texture/Masonry.Brick.png");
 	g_uiFTexID[1] = texturepool->AddTexture("texture/Masonry.Brick.png");
-	g_uiFTexID[3] = texturepool->AddTexture("texture/metal.png");
+	g_uiFTexID[3] = texturepool->AddTexture("texture/Door.png");
 	g_uiFTexID[4] = texturepool->AddTexture("texture/Masonry.Brick.normal.png");
+	g_uiSphereCubeMap = CubeMap_load_SOIL();
 	//
 	g_uiFTexID[5] = texturepool->AddTexture("texture/cheese.png");
 	g_uiFTexID[6] = texturepool->AddTexture("texture/Masonry.Brick.png");
 #ifdef MULTITEXTURE
 	g_uiFTexID[2] = texturepool->AddTexture("texture/lightMap1.png");
 #endif
-	g_uiSphereCubeMap = CubeMap_load_SOIL();
 	//animals test
 	g_uiAimalTexID[0] = texturepool->AddTexture("texture/wi_tata.png");
 	g_uiAimalTexID[1] = texturepool->AddTexture("texture/wi_sma.png");
@@ -172,6 +179,7 @@ void init(void)
 	g_uiCheeseNormalTexID = texturepool->AddTexture("texture/CheeseNormalMap.png");
 	g_uiDianosourNormalTexID = texturepool->AddTexture("texture/raptor_normal.png");
 
+	//-----------------------------------------
 	for (int i = 0; i < 4; i++) {															// 地板
 		g_pFloor[i] = new CQuad;
 #ifdef MULTITEXTURE
@@ -205,6 +213,7 @@ void init(void)
 		}
 	}
 
+	//-----------------------------------------
 	for (int i = 0; i < 6; i++) {															//平行牆壁
 		g_pHorizontalWall[i] = new CQuad;
 #ifdef MULTITEXTURE
@@ -219,35 +228,36 @@ void init(void)
 		if (i == 0) {
 			vT.x = -10; vT.y = 0; vT.z = -10.0f;
 			mxT = Translate(vT);
-			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(20, 1, 20));
+			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * RotateZ(270.0f) * Scale(20, 1, 20));
 		}
 		else if (i == 1) {
 			vT.x = -10; vT.y = 0; vT.z = 10;
 			mxT = Translate(vT);
-			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(20, 1, 20));
+			g_pHorizontalWall[1]->SetTRSMatrix(mxT * RotateX(90.0f) * RotateZ(270.0f) * Scale(20, 1, 20));
 		}
 		else if (i == 2) {
-			vT.x = 10; vT.y = 0; vT.z = -10;
+			vT.x = 10; vT.y = 0; vT.z = -8;
 			mxT = Translate(vT);
-			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(20, 1, 20));
+			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * RotateZ(270.0f) * Scale(16, 1, 20));
 		}
 		else if (i == 3) {
-			vT.x = 10; vT.y = 0; vT.z = 10;
+			vT.x = 10; vT.y = 0; vT.z = 8;
 			mxT = Translate(vT);
-			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(20, 1, 20));
+			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * RotateZ(90.0f) * Scale(16, 1, 20));
 		}
 		else if (i == 4) {
 			vT.x = 30; vT.y = 0; vT.z = -10;
 			mxT = Translate(vT);
-			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(20, 1, 20));
+			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateX(90.0f) * RotateZ(90.0f) * Scale(20, 1, 20));
 		}
 		else if (i == 5) {
 			vT.x = 30; vT.y = 0; vT.z = 10;
 			mxT = Translate(vT);
-			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(20, 1, 20));
+			g_pHorizontalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * RotateZ(90.0f) * Scale(20, 1, 20));
 		}
 	}
 
+	//-----------------------------------------
 	for (int i = 0; i < 6; i++) {															//垂直牆壁
 		g_pVerticalWall[i] = new CQuad;
 #ifdef MULTITEXTURE
@@ -262,17 +272,17 @@ void init(void)
 		if (i == 0) {																	//左下牆
 			vT.x = 0; vT.y = 0; vT.z = -20.0f;
 			mxT = Translate(vT);
-			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
+			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(90.0f) * Scale(20, 1, 20));
 		}
 		else if (i == 1) {																//左上牆
 			vT.x = 20.0f; vT.y = 0; vT.z = -20.0f;
 			mxT = Translate(vT);
-			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
+			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(90.0f) * Scale(20, 1, 20));
 		}
 		else if (i == 2) {																//中下牆
-			vT.x = 0; vT.y = 0; vT.z = 0;
+			vT.x = 2; vT.y = 0; vT.z = 0;
 			mxT = Translate(vT);
-			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(270.0f) * Scale(20, 1, 20));
+			g_pVerticalWall[i]->SetTRSMatrix(mxT * RotateX(90.0f) * Scale(16, 1, 20));
 		}
 		else if (i == 3) {																//中上牆
 			vT.x = 20.0f; vT.y = 0; vT.z = 0;
@@ -291,21 +301,34 @@ void init(void)
 		}
 	}
 
-	for (int i = 0; i < 7; i++) {
-		g_pFrontWall[i] = new CQuad;
+
+	//-----------------------------------------
+	for (int i = 0; i < 3; i++) {															// 門
+		g_pDoor[i] = new CQuad;
 #ifdef MULTITEXTURE
-		g_pFrontWall[i]->SetTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
+		g_pDoor[i]->SetTextureLayer(DIFFUSE_MAP | LIGHT_MAP);
 #endif
-		g_pFrontWall[i]->SetShader();
-		vT.x = i * 25 - 10.0f; vT.y = 0; vT.z = 0.0f;
-		mxT = Translate(vT);
-		if (i == 0)g_pFrontWall[i]->SetTRSMatrix(mxT * RotateZ(270.0f) * Scale(25, 1, 25));
-		else g_pFrontWall[i]->SetTRSMatrix(mxT * RotateZ(90.0f) * Scale(25, 1, 25));
-		g_pFrontWall[i]->SetShadingMode(GOURAUD_SHADING);
-		g_pFrontWall[i]->SetTiling(4, 4);
+		g_pDoor[i]->SetShader();
+		g_pDoor[i]->SetShadingMode(GOURAUD_SHADING);
+		g_pDoor[i]->SetTiling(1, 1);
 		// 設定貼圖
-		g_pFrontWall[i]->SetMaterials(vec4(0), vec4(0.15f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
-		g_pFrontWall[i]->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
+		g_pDoor[i]->SetMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
+		g_pDoor[i]->SetKaKdKsShini(1.0f, 1.0f, 1.0f, 1);
+		if (i == 0) {
+			vT.x = 10; vT.y =5.0f; vT.z = 18.f;
+			mxT = Translate(vT);
+			g_pDoor[i]->SetTRSMatrix(mxT * RotateX(270.0f)* RotateZ(90.0f)* Scale(4.5f, 1, 10));
+		}
+		else if (i == 1) {
+			vT.x = 10; vT.y = 2.0f; vT.z = -18.0f;
+			mxT = Translate(vT);
+			g_pDoor[i]->SetTRSMatrix(mxT * RotateX(270.0f)* RotateZ(90.0f)* Scale(4, 1, 16));
+		}
+		else if (i == 2) {
+			vT.x = -8.0f; vT.y = 2.0f; vT.z = 0;
+			mxT = Translate(vT);
+			g_pDoor[i]->SetTRSMatrix(mxT * RotateX(90.0f)* Scale(4, 1, 16));
+		}
 	}
 
 	// 設定 Cube
@@ -315,7 +338,7 @@ void init(void)
 	g_pCube->SetShader();
 	vT.x = 0.0f; vT.y = 1.0f; vT.z = 10.0f;
 	mxT = Translate(vT);
-	mxT._m[0][0] = 5.0f; mxT._m[1][1] = 5.0f; mxT._m[2][2] = 5.0f;
+	mxT._m[0][0] = 3.0f; mxT._m[1][1] = 3.0f; mxT._m[2][2] = 3.0f;
 	g_pCube->SetTRSMatrix(mxT);
 	g_pCube->SetShadingMode(GOURAUD_SHADING);
 	// materials
@@ -324,27 +347,26 @@ void init(void)
 
 	// For Reflecting Sphere
 	g_pSphere = new CSolidSphere(1.0f, 24, 12);
-	g_pSphere->SetTextureLayer(DIFFUSE_MAP);  // 使用 
-	g_pSphere->SetCubeMapTexName(1);
-	g_pSphere->SetViewPosition(eye);
-	g_pSphere->SetShaderName("vsCubeMapping.glsl", "fsCubeMapping.glsl");//使用CUBE MAPPING
-	g_pSphere->SetShader();
-	vT.x = 20.0f; vT.y = 2.0f; vT.z = 10.0f;
+	vT.x = 20.0f; vT.y = 2.0f; vT.z =10.0f;
 	mxT = Translate(vT);
 	mxT._m[0][0] = 2.0f; mxT._m[1][1] = 2.0f; mxT._m[2][2] = 2.0f;
-	g_pSphere->SetTRSMatrix(mxT * RotateX(90.0f));
-	g_pSphere->SetShadingMode(GOURAUD_SHADING);
+	g_pSphere->SetTRSMatrix(mxT* RotateX(90.0f));
 	// 設定貼圖
 	g_pSphere->SetMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 	g_pSphere->SetKaKdKsShini(0, 0.8f, 0.5f, 1);
 	g_pSphere->SetColor(vec4(0.9f, 0.9f, 0.9f, 1.0f));
+	g_pSphere->SetCubeMapTexName(1);	// 設定 CubeMap 是使用第 1 張貼圖
+	g_pSphere->SetViewPosition(eye);
+	g_pSphere->SetTextureLayer(DIFFUSE_MAP | CUBIC_MAP); // 沒有使用 Light Map
+	g_pSphere->SetShadingMode(PHONG_SHADING);
+	g_pSphere->SetShader();
 
 
 	g_pObj1 = new CObjNew("./Common/Well.obj");
 	g_pObj1->SetTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
 	g_pObj1->SetShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
 	g_pObj1->SetShader();
-	vT.x = 50.5; vT.y = 0.5; vT.z = 1;
+	vT.x = 20.0f; vT.y = 0.5; vT.z = -10.0f;
 	mxT = Translate(vT);
 	g_pObj1->SetTRSMatrix(mxT);
 	g_pObj1->SetShadingMode(GOURAUD_SHADING);
@@ -413,15 +435,35 @@ void init(void)
 
 
 	// 設定 代表 Light 的 WireSphere
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 4; i++) {
 		g_pLight[i] = new CWireSphere(0.25f, 6, 3);
 		g_pLight[i]->SetLightingDisable();
 		g_pLight[i]->SetTextureLayer(NONE_MAP);	// 沒有貼圖
 		g_pLight[i]->SetShader();
-		vT.x = i * 25; vT.y = 6.0f; vT.z = 0;
-		mxT = Translate(vT);
-		g_pLight[i]->SetTRSMatrix(mxT);
 		g_pLight[0]->SetColor(g_Light1.diffuse);
+		if (i == 0) {
+			vT.x = 0; vT.y = 6.0f; vT.z = 10.0f;
+			mxT = Translate(vT);
+			g_pLight[i]->SetTRSMatrix(mxT);
+		}
+		else if (i == 1) {
+			vT.x = 20.0f; vT.y = 6.0f; vT.z = 10.0f;
+			mxT = Translate(vT);
+			g_pLight[i]->SetTRSMatrix(mxT);
+			g_pLight[i]->SetColor(g_Light2.diffuse);
+		}
+		else if (i == 2) {
+			vT.x = 20.0f; vT.y = 6.0f; vT.z = -10.0f;
+			mxT = Translate(vT);
+			g_pLight[i]->SetTRSMatrix(mxT);
+			g_pLight[i]->SetColor(g_Light3.diffuse);
+		}
+		else if (i == 3) {
+			vT.x = 0; vT.y = 6.0f; vT.z = -10.0f;
+			mxT = Translate(vT);
+			g_pLight[i]->SetTRSMatrix(mxT);
+			g_pLight[i]->SetColor(g_Light4.diffuse);
+		}
 	}
 
 
@@ -432,12 +474,12 @@ void init(void)
 	for (int i = 0; i < 4; i++) {
 		g_pFloor[i]->SetProjectionMatrix(mpx);
 	}
+	for (int i = 0; i < 3; i++) {
+		g_pDoor[i]->SetProjectionMatrix(mpx);
+	}
 	for (int i = 0; i < 6; i++) {
 		g_pHorizontalWall[i]->SetProjectionMatrix(mpx);
 		g_pVerticalWall[i]->SetProjectionMatrix(mpx);
-	}
-	for (int i = 0; i < 7; i++) {
-		g_pFrontWall[i]->SetProjectionMatrix(mpx);
 	}
 	g_pCube->SetProjectionMatrix(mpx);
 	g_pSphere->SetProjectionMatrix(mpx);
@@ -449,7 +491,7 @@ void init(void)
 	g_pAimal[1]->SetProjectionMatrix(mpx);
 	g_pAimal[2]->SetProjectionMatrix(mpx);
 
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 4; i++) {
 		g_pLight[i]->SetProjectionMatrix(mpx);
 	}
 }
@@ -483,6 +525,13 @@ void GL_Display(void)
 	//  glBindTexture(GL_TEXTURE_2D, 0);
 #endif
 	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[3]);
+	glActiveTexture(GL_TEXTURE2);
+	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[3]);
+	for (int i = 0; i < 3; i++) {
+		g_pDoor[i]->Draw();
+	}
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[1]);
 	glActiveTexture(GL_TEXTURE2);
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[4]);
@@ -495,9 +544,8 @@ void GL_Display(void)
 	g_pSphere->Draw();
 
 
-
 	glBindTexture(GL_TEXTURE_2D, 0);
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 4; i++) {
 		g_pLight[i]->Draw();
 	}
 
@@ -556,7 +604,8 @@ void UpdateLightPosition(float dt)
 	}
 
 	g_Light1.position.x = g_fLightRadius * cosf(g_fLightTheta);
-	g_Light1.position.z = g_fLightRadius * sinf(g_fLightTheta);
+	g_Light1.position.z = g_fLightRadius * sinf(g_fLightTheta) +10.0f;
+
 
 	mxT = Translate(g_Light1.position);
 	g_pLight[0]->SetTRSMatrix(mxT);
@@ -583,8 +632,8 @@ void onFrameMove(float delta)
 			g_pHorizontalWall[i]->SetViewMatrix(mvx);
 			g_pVerticalWall[i]->SetViewMatrix(mvx);
 		}
-		for (int i = 0; i < 7; i++) {
-			g_pFrontWall[i]->SetViewMatrix(mvx);
+		for (int i = 0; i < 3; i++) {
+			g_pDoor[i]->SetViewMatrix(mvx);
 		}
 		g_pCube->SetViewMatrix(mvx);
 		g_pSphere->SetViewMatrix(mvx);
@@ -599,25 +648,91 @@ void onFrameMove(float delta)
 		g_pAimal[1]->SetViewMatrix(mvx);
 		g_pAimal[2]->SetViewMatrix(mvx);
 
-		for (int i = 0; i < 6; i++) {
+		for (int i = 0; i < 4; i++) {
 			g_pLight[i]->SetViewMatrix(mvx);
 		}
 
+		if (g_pLight2On) {
+			g_Light2.diffuse = 1.0f;
+			g_Light2.specular = 1.0f;
+
+		}
+		else {
+			g_Light2.diffuse = 0;
+			g_Light2.specular = 0;
+		}
+
+		if (g_pLight3On) {
+			g_Light3.diffuse = 1.0f;
+			g_Light3.specular = 1.0f;
+
+		}
+		else {
+			g_Light3.diffuse = 0;
+			g_Light3.specular = 0;
+		}
+
+		if (g_pLight4On) {
+			g_Light4.diffuse = 1.0f;
+			g_Light4.specular = 1.0f;
+
+		}
+		else {
+			g_Light4.diffuse = 0;
+			g_Light4.specular = 0;
+		}
 	}
+
+	//----------------------------------------開門
+	vec4 vT;
+	mat4 mxT;
+	if (eye.x > 5.0f && eye.z > 15.0f) {			// LR1
+		g_bInR1 = true;
+		if (g_fRot0 > -90.f) g_fRot0 -= delta * 120.0f;
+		g_pDoor[0]->SetTRSMatrix(Translate(10.0f, 5.0f, 18.0f) * 
+			RotateX(270.0f) * 
+			RotateZ(90.0f) *
+			RotateZ(-g_fRot0)* 
+			Scale(4.5, 1,  10) *
+			Translate(0.5f, 1.5f, 0) );
+	}
+	if (eye.x < -17.f && eye.z > 12.f) {			// LR2
+		g_bInR3 = true;
+		if (g_fRot1 < 90.f) g_fRot1 += delta * 150.0f;
+		g_pDoor[1]->SetTRSMatrix(Translate(-FLOOR_SCALE / 2.0f, 0.5f, FLOOR_SCALE / 4.0f + FLOOR_SCALE / 6.0f - 0.3f) *
+			RotateY(-90.f) *
+			RotateY(-g_fRot1) *
+			Translate(-FLOOR_SCALE / 12.0f, 0.0f, -FLOOR_SCALE / 12.0f + 0.7f) *
+			Scale(0.8f, 0.8f, 0.8f));
+	}
+	else g_bInR3 = false;
+	if (eye.x > 17.f && eye.z < -12.f) {			// RR1
+		g_bInR2 = true;
+		if (g_fRot2 < 90.f) g_fRot2 += delta * 150.0f;
+		g_pDoor[2]->SetTRSMatrix(Translate(FLOOR_SCALE / 2.0f, 0.5f, -FLOOR_SCALE / 4.0f - FLOOR_SCALE / 6.0f + 0.3f) *
+			RotateY(90.f) *
+			RotateY(-g_fRot2) *
+			Translate(-FLOOR_SCALE / 12.0f, 0.0f, -FLOOR_SCALE / 12.0f + 0.7f) *
+			Scale(0.8f, 0.8f, 0.8f));
+	}
+	else g_bInR2 = false;
 
 	// 如果需要重新計算時，在這邊計算每一個物件的顏色
 	g_pFloor[0]->Update(delta, g_Light1);
+	g_pDoor[0]->Update(delta, g_Light1, g_Light2);
 	g_pHorizontalWall[0]->Update(delta, g_Light4);
 	g_pVerticalWall[0]->Update(delta, g_Light4);
 	g_pFloor[1]->Update(delta, g_Light2);
+	g_pDoor[1]->Update(delta, g_Light1, g_Light4);
 	g_pHorizontalWall[1]->Update(delta, g_Light1);
 	g_pVerticalWall[1]->Update(delta, g_Light3);
 	g_pFloor[2]->Update(delta, g_Light4);
-	g_pHorizontalWall[2]->Update(delta, g_Light2, g_Light3);
+	g_pDoor[2]->Update(delta, g_Light3, g_Light4);
+	g_pHorizontalWall[2]->Update(delta, g_Light4, g_Light3);
 	g_pVerticalWall[2]->Update(delta, g_Light1, g_Light4);
 	g_pFloor[3]->Update(delta, g_Light3);
-	g_pHorizontalWall[3]->Update(delta, g_Light1, g_Light2);
-	g_pVerticalWall[3]->Update(delta, g_Light2, g_Light3);
+	g_pHorizontalWall[3]->Update(delta, g_Light1, g_Light2)  ;
+	g_pVerticalWall[3]->Update(delta, g_Light3, g_Light2);
 	g_pHorizontalWall[4]->Update(delta, g_Light3);
 	g_pVerticalWall[4]->Update(delta, g_Light1);
 	g_pHorizontalWall[5]->Update(delta, g_Light2);
@@ -628,7 +743,7 @@ void onFrameMove(float delta)
 	g_pObj1->Update(delta, g_Light3);
 	g_pObj2->Update(delta, g_Light3);
 	g_pAimal[2]->Update(delta, g_Light4);
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 4; i++) {
 		g_pLight[i]->Update(delta);
 	}
 
@@ -641,6 +756,12 @@ void onFrameMove(float delta)
 void Win_Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
+	case '1':
+		g_pLight2On = !g_pLight2On;
+	case '2':
+		g_pLight3On = !g_pLight3On;
+	case '3':
+		g_pLight4On = !g_pLight4On;
 	case  SPACE_KEY:
 
 		break;
@@ -726,15 +847,32 @@ void Win_SpecialKeyboard(int key, int x, int y) {
 		if (eye.x > 3.0f && eye.x < 5.0f && eye.z > -1.5f && eye.z < 0.5f) {
 			g_bAutoRotating = !g_bAutoRotating;
 		}
-		if (eye.x <= (WALKING_SPACE + 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= -WALKING_SPACE) {
-			eye = eye + cameraSpeed * normalize(vec4(at.x, 0, at.z, 0));
-		}
-		else {	// 修正卡牆
-			if (eye.x > (WALKING_SPACE + 10.0f)) eye.x = (WALKING_SPACE + 10.0f);
+		if (!g_bInR1) //還沒打開門
+		{
+			if (eye.x <= (WALKING_SPACE - 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= (WALKING_SPACE - 15.0f)) {
+				eye = eye + cameraSpeed * normalize(vec4(at.x, 0, at.z, 0));
+			}
+			else {	// 修正卡牆
+			if (eye.x > (WALKING_SPACE - 10.0f)) eye.x = (WALKING_SPACE - 10.0f);
 			else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
 			if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
-			else if (eye.z < -WALKING_SPACE) eye.z = -WALKING_SPACE;
+			else if (eye.z < (WALKING_SPACE - 15.0f)) eye.z = (WALKING_SPACE - 15.0f);
+			}
 		}
+		else{
+
+			if (eye.x <= (WALKING_SPACE + 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= -WALKING_SPACE) {
+				eye = eye + cameraSpeed * normalize(vec4(at.x, 0, at.z, 0));
+			}
+			else {	// 修正卡牆
+				if (eye.x > (WALKING_SPACE + 10.0f)) eye.x = (WALKING_SPACE + 10.0f);
+				else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
+				if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
+				else if (eye.z < -WALKING_SPACE) eye.z = -WALKING_SPACE;
+			}
+		}
+		
+		
 		camera->updateViewLookAt(eye, eye + at);
 
 		break;
@@ -742,16 +880,29 @@ void Win_SpecialKeyboard(int key, int x, int y) {
 		if (eye.x > 3.0f && eye.x < 5.0f && eye.z > -1.5f && eye.z < 0.5f) {
 			g_bAutoRotating = !g_bAutoRotating;
 		}
-		if (eye.x <= (WALKING_SPACE + 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= -WALKING_SPACE) {
-
-			eye = eye - cameraSpeed * normalize(vec4(at.x, 0, at.z, 0));
-
+		if (!g_bInR1) //還沒打開門
+		{
+			if (eye.x <= (WALKING_SPACE - 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= (WALKING_SPACE - 15.0f)) {
+				eye = eye - cameraSpeed * normalize(vec4(at.x, 0, at.z, 0));
+			}
+			else {	// 修正卡牆
+				if (eye.x > (WALKING_SPACE - 10.0f)) eye.x = (WALKING_SPACE - 10.0f);
+				else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
+				if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
+				else if (eye.z < (WALKING_SPACE - 15.0f)) eye.z = (WALKING_SPACE - 15.0f);
+			}
 		}
-		else {	// 修正卡牆
-			if (eye.x > (WALKING_SPACE + 10.0f)) eye.x = (WALKING_SPACE + 10.0f);
-			else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
-			if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
-			else if (eye.z < -WALKING_SPACE) eye.z = -WALKING_SPACE;
+		else{
+
+			if (eye.x <= (WALKING_SPACE + 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= -WALKING_SPACE) {
+				eye = eye - cameraSpeed * normalize(vec4(at.x, 0, at.z, 0));
+			}
+			else {	// 修正卡牆
+				if (eye.x > (WALKING_SPACE + 10.0f)) eye.x = (WALKING_SPACE + 10.0f);
+				else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
+				if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
+				else if (eye.z < -WALKING_SPACE) eye.z = -WALKING_SPACE;
+			}
 		}
 		camera->updateViewLookAt(eye, eye + at);
 		break;
@@ -759,15 +910,30 @@ void Win_SpecialKeyboard(int key, int x, int y) {
 		if (eye.x > 3.0f && eye.x < 5.0f && eye.z > -1.5f && eye.z < 0.5f) {
 			g_bAutoRotating = !g_bAutoRotating;
 		}
-		if (eye.x <= (WALKING_SPACE + 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= -WALKING_SPACE) {
-
-			eye = eye + cameraSpeed * normalize(vec4(sin(g_fTheta) * sin(g_fPhi + M_PI / 2), 0, sin(g_fTheta) * cos(g_fPhi + M_PI / 2), 0));
+		if (!g_bInR1) //還沒打開門
+		{
+			if (eye.x <= (WALKING_SPACE - 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >=(WALKING_SPACE - 15.0f)) {
+				eye = eye + cameraSpeed * normalize(vec4(sin(g_fTheta) * sin(g_fPhi + M_PI / 2), 0, sin(g_fTheta) * cos(g_fPhi + M_PI / 2), 0));
+			}
+			else {	// 修正卡牆
+				if (eye.x > (WALKING_SPACE - 10.0f)) eye.x = (WALKING_SPACE - 10.0f);
+				else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
+				if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
+				else if (eye.z < (WALKING_SPACE - 15.0f)) eye.z = (WALKING_SPACE - 15.0f);
+			}
 		}
-		else {	// 修正卡牆
-			if (eye.x > (WALKING_SPACE + 10.0f)) eye.x = (WALKING_SPACE + 10.0f);
-			else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
-			if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
-			else if (eye.z < -WALKING_SPACE) eye.z = -WALKING_SPACE;
+		else {
+
+			if (eye.x <= (WALKING_SPACE + 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= -WALKING_SPACE) {
+				eye = eye + cameraSpeed * normalize(vec4(sin(g_fTheta) * sin(g_fPhi + M_PI / 2), 0, sin(g_fTheta) * cos(g_fPhi + M_PI / 2), 0));
+			}
+			else {	// 修正卡牆
+				if (eye.x > (WALKING_SPACE + 10.0f)) eye.x = (WALKING_SPACE + 10.0f);
+				else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
+				if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
+				else if (eye.z < -WALKING_SPACE) eye.z = -WALKING_SPACE;
+			}
+		
 		}
 		camera->updateViewLookAt(eye, eye + at);
 
@@ -776,15 +942,30 @@ void Win_SpecialKeyboard(int key, int x, int y) {
 		if (eye.x > 3.0f && eye.x < 5.0f && eye.z > -1.5f && eye.z < 0.5f) {
 			g_bAutoRotating = !g_bAutoRotating;
 		}
-		if (eye.x <= (WALKING_SPACE + 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= -WALKING_SPACE) {
-
-			eye = eye - cameraSpeed * normalize(vec4(sin(g_fTheta) * sin(g_fPhi + M_PI / 2), 0, sin(g_fTheta) * cos(g_fPhi + M_PI / 2), 0));
+		if (!g_bInR1) //還沒打開門
+		{
+			if (eye.x <= (WALKING_SPACE - 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= (WALKING_SPACE - 15.0f)) {
+				eye = eye - cameraSpeed * normalize(vec4(sin(g_fTheta) * sin(g_fPhi + M_PI / 2), 0, sin(g_fTheta) * cos(g_fPhi + M_PI / 2), 0));
+			}
+			else {	// 修正卡牆
+				if (eye.x > (WALKING_SPACE - 10.0f)) eye.x = (WALKING_SPACE - 10.0f);
+				else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
+				if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
+				else if (eye.z < (WALKING_SPACE - 15.0f)) eye.z = (WALKING_SPACE - 15.0f);
+			}
 		}
-		else {	// 修正卡牆
-			if (eye.x > (WALKING_SPACE + 10.0f)) eye.x = (WALKING_SPACE + 10.0f);
-			else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
-			if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
-			else if (eye.z < -WALKING_SPACE) eye.z = -WALKING_SPACE;
+		else{
+
+			if (eye.x <= (WALKING_SPACE + 10.0f) && eye.x >= (-WALKING_SPACE + 10.0f) && eye.z <= WALKING_SPACE && eye.z >= -WALKING_SPACE) {
+				eye = eye - cameraSpeed * normalize(vec4(sin(g_fTheta) * sin(g_fPhi + M_PI / 2), 0, sin(g_fTheta) * cos(g_fPhi + M_PI / 2), 0));
+			}
+			else {	// 修正卡牆
+				if (eye.x > (WALKING_SPACE + 10.0f)) eye.x = (WALKING_SPACE + 10.0f);
+				else if (eye.x < (-WALKING_SPACE + 10.0f)) eye.x = (-WALKING_SPACE + 10.0f);
+				if (eye.z > WALKING_SPACE) eye.z = WALKING_SPACE;
+				else if (eye.z < -WALKING_SPACE) eye.z = -WALKING_SPACE;
+			}
+
 		}
 		camera->updateViewLookAt(eye, eye + at);
 
