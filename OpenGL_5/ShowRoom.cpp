@@ -95,7 +95,7 @@ LightSource g_Light2 = {
 	vec3(20.0f, 0.0f, 10.0f),			  // spotTarget
 	vec3(0.0f, 0.0f, 0.0f),			  //spotDirection
 	2.0f,	// spotExponent(parameter e); cos^(e)(phi) 
-	45.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
+	60.0f,	// spotCutoff;	// (range: [0.0, 90.0], 180.0)  spot 的照明範圍
 	0.707f,	// spotCosCutoff; // (range: [1.0,0.0],-1.0), 照明方向與被照明點之間的角度取 cos 後, cut off 的值
 	1,	// constantAttenuation	(a + bd + cd^2)^-1 中的 a, d 為光源到被照明點的距離
 	0,	// linearAttenuation	    (a + bd + cd^2)^-1 中的 b
@@ -163,11 +163,12 @@ void init(void)
 	g_uiFTexID[4] = texturepool->AddTexture("texture/Masonry.Brick.normal.png");
 	g_uiSphereCubeMap = CubeMap_load_SOIL();
 	//
-	g_uiFTexID[5] = texturepool->AddTexture("texture/cheese.png");
-	g_uiFTexID[6] = texturepool->AddTexture("texture/Masonry.Brick.png");
+	g_uiFTexID[5] = texturepool->AddTexture("texture/checker.png");
+	g_uiFTexID[6] = texturepool->AddTexture("texture/gold.png");
 	g_uiFTexID[7] = texturepool->AddTexture("texture/earth.png");
 #ifdef MULTITEXTURE
 	g_uiFTexID[2] = texturepool->AddTexture("texture/lightMap1.png");
+	g_uiFTexID[8] = texturepool->AddTexture("texture/lightMap2.png");
 #endif
 	//animals test
 	g_uiAimalTexID[0] = texturepool->AddTexture("texture/wi_tata.png");
@@ -177,8 +178,6 @@ void init(void)
 	g_uiAimalNormalTexID[0] = texturepool->AddTexture("texture/wi_tata_normal.png");
 	g_uiAimalNormalTexID[1] = texturepool->AddTexture("texture/wi_sma_normal.png");
 	g_uiAimalNormalTexID[2] = texturepool->AddTexture("texture/wi_tree_normal.png");
-	g_uiCheeseNormalTexID = texturepool->AddTexture("texture/CheeseNormalMap.png");
-	g_uiDianosourNormalTexID = texturepool->AddTexture("texture/raptor_normal.png");
 
 	//-----------------------------------------
 	for (int i = 0; i < 4; i++) {															// 地板
@@ -188,7 +187,7 @@ void init(void)
 #endif
 		g_pFloor[i]->setShader();
 		g_pFloor[i]->setShadingMode(GOURAUD_SHADING);
-		g_pFloor[i]->setTiling(4, 4);
+		g_pFloor[i]->setTiling(4, 4);					//Mipmapping
 		// 設定貼圖
 		g_pFloor[i]->setMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		g_pFloor[i]->setKaKdKsShini(0, 0.8f, 0.5f, 1);
@@ -222,7 +221,7 @@ void init(void)
 #endif
 		g_pHorizontalWall[i]->setShader();
 		g_pHorizontalWall[i]->setShadingMode(GOURAUD_SHADING);
-		g_pHorizontalWall[i]->setTiling(4, 4);
+		g_pHorizontalWall[i]->setTiling(4, 4);					//Mipmapping
 		// 設定貼圖
 		g_pHorizontalWall[i]->setMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		g_pHorizontalWall[i]->setKaKdKsShini(0, 0.8f, 0.5f, 1);
@@ -266,7 +265,7 @@ void init(void)
 #endif
 		g_pVerticalWall[i]->setShader();
 		g_pVerticalWall[i]->setShadingMode(GOURAUD_SHADING);
-		g_pVerticalWall[i]->setTiling(4, 4);
+		g_pVerticalWall[i]->setTiling(4, 4);					//Mipmapping
 		// 設定貼圖
 		g_pVerticalWall[i]->setMaterials(vec4(0), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
 		g_pVerticalWall[i]->setKaKdKsShini(0, 0.8f, 0.5f, 1);
@@ -337,10 +336,10 @@ void init(void)
 	g_pCube->setTextureLayer(DIFFUSE_MAP | NORMAL_MAP);
 	g_pCube->setShaderName("vsNormalMapLighting.glsl", "fsNormalMapLighting.glsl");
 	g_pCube->setShader();
-	vT.x = 0.0f; vT.y = 1.0f; vT.z = 10.0f;
+	vT.x = 20.0f; vT.y = 2.0f; vT.z =10.0f;
 	mxT = Translate(vT);
-	mxT._m[0][0] = 3.0f; mxT._m[1][1] = 3.0f; mxT._m[2][2] = 3.0f;
-	g_pCube->setTRSMatrix(mxT);
+	mxT._m[0][0] = 2.0f; mxT._m[1][1] = 2.0f; mxT._m[2][2] = 2.0f;
+	g_pCube->setTRSMatrix(mxT* RotateX(90.0f)* RotateY(180.0f));
 	g_pCube->setShadingMode(GOURAUD_SHADING);
 	// materials
 	g_pCube->setMaterials(vec4(0.35f, 0.35f, 0.35f, 1), vec4(0.85f, 0.85f, 0.85f, 1), vec4(1.0f, 1.0f, 1.0f, 1.0f));
@@ -348,7 +347,7 @@ void init(void)
 
 	// For Reflecting Sphere
 	g_pSphere = new CSolidSphere(1.0f, 24, 12);
-	vT.x = 20.0f; vT.y = 2.0f; vT.z =10.0f;
+	vT.x = 0.0f; vT.y = 2.0f; vT.z = 10.0f;
 	mxT = Translate(vT);
 	mxT._m[0][0] = 2.0f; mxT._m[1][1] = 2.0f; mxT._m[2][2] = 2.0f;
 	g_pSphere->setTRSMatrix(mxT* RotateX(90.0f)* RotateY(180.0f));
@@ -395,7 +394,7 @@ void init(void)
 #endif
 
 	g_pAimal[2]->setShader();
-	mxT = Translate(80, 1.0f, -5.0f) * RotateX(45) * Scale(2, 2, 2);
+	mxT = Translate(25, 1.0f, 10.0f) * RotateX(45) * Scale(2, 2, 2);
 	g_pAimal[2]->setTRSMatrix(mxT);
 	g_pAimal[2]->setShadingMode(GOURAUD_SHADING);
 	// 設定貼圖
@@ -578,15 +577,15 @@ void GL_Display(void)
 
 							//obj1
 	glActiveTexture(GL_TEXTURE0); // select active texture 0
-	glBindTexture(GL_TEXTURE_2D, g_uiCheeseNormalTexID); // 與 Diffuse Map 結合
+	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[5]); // 與 Diffuse Map 結合
 	glActiveTexture(GL_TEXTURE2); // select active texture 0
-	glBindTexture(GL_TEXTURE_2D, g_uiCheeseNormalTexID); // 與 Diffuse Map 結合
+	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[5]); // 與 Diffuse Map 結合
 	g_pObj1->draw();
 
 	glActiveTexture(GL_TEXTURE0); // select active texture 0
 	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[6]); // 與 Diffuse Map 結合
 	glActiveTexture(GL_TEXTURE2); // select active texture 0
-	glBindTexture(GL_TEXTURE_2D, g_uiDianosourNormalTexID); // 與 Diffuse Map 結合
+	glBindTexture(GL_TEXTURE_2D, g_uiFTexID[5]); // 與 Diffuse Map 結合
 	g_pObj2->draw();
 	glutSwapBuffers();	// 交換 Frame Buffer
 }
@@ -653,16 +652,24 @@ void onFrameMove(float delta)
 			g_pLight[i]->setViewMatrix(mvx);
 		}
 
-		if (g_pLightOn) {
+		if (g_bInR1 && g_bInR2 && g_bInR3) {
 			g_Light1.diffuse = 1.0f;
 			g_Light1.specular = 1.0f;
 
+		}
+		else if (g_bInR1 && g_bInR3) {
+			g_Light1.diffuse = 0.6f;
+			g_Light1.specular = 0.6f;
+		}
+		else if (g_bInR1) {
+			g_Light1.diffuse = 0.3f;
+			g_Light1.specular = 0.3f;
 		}
 		else {
 			g_Light1.diffuse = 0;
 			g_Light1.specular = 0;
 		}
-		if (g_pLight2On || g_bInR1) {
+		if (g_pLight2On && g_bInR1) {
 			g_Light2.diffuse = 1.0f;
 			g_Light2.specular = 1.0f;
 
@@ -672,7 +679,7 @@ void onFrameMove(float delta)
 			g_Light2.specular = 0;
 		}
 
-		if (g_pLight3On || g_bInR2) {
+		if (g_pLight3On) {
 			g_Light3.diffuse = 1.0f;
 			g_Light3.specular = 1.0f;
 
@@ -682,7 +689,7 @@ void onFrameMove(float delta)
 			g_Light3.specular = 0;
 		}
 
-		if (g_pLight4On || g_bInR3) {
+		if (g_pLight4On && g_bInR3) {
 			g_Light4.diffuse = 1.0f;
 			g_Light4.specular = 1.0f;
 
@@ -749,11 +756,11 @@ void onFrameMove(float delta)
 	g_pHorizontalWall[5]->Update(delta, g_Light2);
 	g_pVerticalWall[5]->Update(delta, g_Light2);
 
-	g_pCube->Update(delta, g_Light1);
-	g_pSphere->Update(delta, g_Light2);
+	g_pCube->Update(delta, g_Light2);
+	g_pSphere->Update(delta, g_Light1);
 	g_pObj1->Update(delta, g_Light3);
 	g_pObj2->Update(delta, g_Light4);
-	g_pAimal[2]->Update(delta, g_Light4);
+	g_pAimal[2]->Update(delta, g_Light2);
 	for (int i = 0; i < 4; i++) {
 		g_pLight[i]->Update(delta);
 	}
